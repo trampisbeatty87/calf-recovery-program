@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calf Recovery — StrongFirst Program</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f9f8f6; --surface: #ffffff; --surface-2: #f1f0ec;
+      --border: rgba(0,0,0,0.09); --border-mid: rgba(0,0,0,0.17);
+      --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-muted: #90908a;
+      --teal-light: #e1f5ee; --teal-mid: #1d9e75; --teal-dark: #0f6e56;
+      --blue-light: #e6f1fb; --blue-mid: #378add; --blue-dark: #185fa5;
+      --amber-light: #fef3e2; --amber-mid: #f59e0b; --amber-dark: #633806;
+      --purple-light: #f0eefe; --purple-dark: #3c3489;
+      --red-light: #fcebeb; --red-dark: #791f1f;
+      --green-light: #eaf3de; --green-mid: #639922; --green-dark: #3b6d11;
+      --gray-light: #f0f0ee; --gray-dark: #4a4a48;
+      --radius-sm: 6px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;
+    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+
+    /* ── Header ── */
+    .site-header { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-icon { width: 36px; height: 36px; background: var(--teal-light); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .site-title { font-size: 15px; font-weight: 600; }
+    .site-sub { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .header-badge { font-size: 12px; padding: 4px 10px; border-radius: 99px; background: var(--teal-light); color: var(--teal-dark); font-weight: 500; }
+
+    /* ── Layout ── */
+    .main-wrap { max-width: 940px; margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
+
+    /* ── Tabs ── */
+    .tab-nav { display: flex; gap: 2px; margin-bottom: 2rem; border-bottom: 0.5px solid var(--border); }
+    .tab-btn { padding: 9px 18px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 400; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+    .tab-btn:hover { color: var(--text-primary); }
+    .tab-btn.active { color: var(--blue-dark); font-weight: 600; border-bottom-color: var(--blue-dark); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Cards ── */
+    .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .card-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5; }
+
+    /* ── TRM Testing ── */
+    .trm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .trm-card { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 1.125rem; }
+    .trm-card-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+    .trm-card-icon { font-size: 18px; }
+    .trm-card-sub { font-size: 12px; color: var(--text-secondary); margin-bottom: 1rem; }
+    .trm-weights { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+    .trm-weight-row { display: flex; align-items: center; gap: 8px; }
+    .trm-weight-label { font-size: 13px; font-weight: 500; width: 60px; flex-shrink: 0; }
+    .trm-rep-input { width: 70px; padding: 6px 8px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; background: var(--surface); color: var(--text-primary); text-align: center; }
+    .trm-rep-input:focus { outline: none; border-color: var(--blue-mid); }
+    .trm-rep-input.in-range { background: var(--teal-light); border-color: var(--teal-mid); }
+    .trm-rep-label { font-size: 11px; color: var(--text-muted); }
+    .trm-result { margin-top: 10px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--gray-light); font-size: 13px; color: var(--text-muted); min-height: 38px; display: flex; align-items: center; }
+    .trm-result.found { background: var(--teal-light); color: var(--teal-dark); font-weight: 500; }
+    .trm-result.warning { background: var(--amber-light); color: var(--amber-dark); }
+    .save-trm-btn { width: 100%; margin-top: 10px; padding: 8px; background: var(--teal-mid); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer; transition: opacity 0.15s; }
+    .save-trm-btn:hover { opacity: 0.88; }
+    .trm-note { font-size: 12px; color: var(--text-muted); background: var(--amber-light); border-radius: var(--radius-md); padding: 10px 14px; line-height: 1.6; margin-bottom: 1.25rem; }
+
+    /* ── Week strip ── */
+    .week-nav-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .week-nav-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; }
+    .week-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+    .week-pill { padding: 6px 14px; border: 0.5px solid var(--border-mid); border-radius: 99px; background: var(--surface); color: var(--text-secondary); cursor: pointer; font-size: 13px; font-family: inherit; transition: all 0.15s; }
+    .week-pill:hover { background: var(--surface-2); }
+    .week-pill.active { background: var(--blue-dark); color: white; border-color: transparent; font-weight: 500; }
+    .week-pill.deload { }
+    .week-pill.testing { }
+
+    /* ── Day schedule strip ── */
+    .day-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 1.5rem; }
+    .day-cell { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 8px 6px; text-align: center; cursor: pointer; transition: all 0.15s; }
+    .day-cell:hover { background: var(--surface-2); }
+    .day-cell.active { border-color: var(--blue-mid); background: var(--blue-light); }
+    .day-cell.rest-cell { opacity: 0.5; cursor: default; }
+    .day-cell.rest-cell:hover { background: var(--surface); }
+    .day-name { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+    .day-type { font-size: 11px; font-weight: 500; }
+    .day-type.lift { color: var(--blue-dark); }
+    .day-type.z2 { color: var(--green-dark); }
+    .day-type.rest { color: var(--text-muted); }
+    .day-type.swing { color: var(--amber-dark); }
+
+    /* ── Session card ── */
+    .session-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 12px; }
+    .session-title { font-size: 19px; font-weight: 700; }
+    .session-sub { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
+    .session-badge { font-size: 11px; padding: 4px 12px; border-radius: 99px; font-weight: 500; flex-shrink: 0; }
+    .badge-a { background: var(--blue-light); color: var(--blue-dark); }
+    .badge-b { background: var(--purple-light); color: var(--purple-dark); }
+    .badge-c { background: var(--amber-light); color: var(--amber-dark); }
+    .badge-swing { background: var(--amber-light); color: var(--amber-dark); }
+    .badge-z2 { background: var(--green-light); color: var(--green-dark); }
+    .badge-rest { background: var(--gray-light); color: var(--gray-dark); }
+    .badge-test { background: var(--teal-light); color: var(--teal-dark); }
+    .badge-deload { background: var(--gray-light); color: var(--gray-dark); }
+
+    /* ── Ladder display ── */
+    .ladder-info { background: var(--surface-2); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 1.25rem; }
+    .ladder-info-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 8px; }
+    .ladder-table { display: grid; grid-template-columns: auto 1fr 1fr 1fr; gap: 6px 14px; align-items: center; font-size: 13px; }
+    .ladder-table .lh { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+    .ladder-table .ex-icon { font-size: 16px; }
+    .ladder-rung { display: inline-flex; align-items: center; gap: 4px; }
+    .rung-pill { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 12px; font-weight: 500; background: var(--blue-light); color: var(--blue-dark); }
+    .rung-sep { color: var(--text-muted); font-size: 11px; }
+
+    /* ── Circuit instructions ── */
+    .circuit-box { background: var(--blue-light); border-left: 3px solid var(--blue-mid); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 1.25rem; font-size: 13px; color: #1a3560; line-height: 1.6; }
+    .circuit-box strong { font-weight: 600; }
+
+    /* ── Exercise log blocks ── */
+    .exercises-wrap { display: flex; flex-direction: column; gap: 0; }
+    .exercise-block { border-bottom: 0.5px solid var(--border); padding: 14px 0; }
+    .exercise-block:last-child { border-bottom: none; }
+    .ex-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .ex-info { flex: 1; }
+    .ex-name { font-size: 14px; font-weight: 600; display: block; margin-bottom: 2px; }
+    .ex-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
+    .ex-prescribed { font-size: 12px; color: var(--text-secondary); }
+    .equip-pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 0.5px solid var(--border-mid); color: var(--text-secondary); }
+    .ex-note-text { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .trm-weight-display { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: var(--teal-light); color: var(--teal-dark); font-weight: 500; }
+    .no-trm-display { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: var(--amber-light); color: var(--amber-dark); }
+
+    /* ── Set logging ── */
+    .log-section { margin-top: 8px; }
+    .log-header { display: grid; grid-template-columns: 28px 75px 70px 65px 1fr; gap: 6px; margin-bottom: 4px; }
+    .log-header span { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .set-rows { display: flex; flex-direction: column; gap: 4px; }
+    .set-row { display: grid; grid-template-columns: 28px 75px 70px 65px 1fr; gap: 6px; align-items: center; }
+    .set-num { font-size: 11px; color: var(--text-muted); text-align: center; font-weight: 600; }
+    .set-row input { width: 100%; padding: 6px 8px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; background: var(--surface-2); color: var(--text-primary); transition: border-color 0.15s, background 0.15s; }
+    .set-row input:focus { outline: none; border-color: var(--blue-mid); background: var(--surface); }
+    .set-row input.logged { background: var(--teal-light); border-color: var(--teal-mid); }
+    .set-row input::placeholder { color: #b0b0aa; font-size: 12px; }
+    .target-reps-badge { font-size: 11px; color: var(--text-muted); white-space: nowrap; padding-top: 2px; }
+
+    /* ── Rest guidance ── */
+    .rest-guide { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .rest-pill { font-size: 11px; padding: 3px 10px; border-radius: 99px; background: var(--surface-2); color: var(--text-secondary); border: 0.5px solid var(--border); }
+
+    /* ── Session actions ── */
+    .date-row { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
+    .date-label { font-size: 13px; color: var(--text-secondary); }
+    .date-input { padding: 6px 10px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; background: var(--surface); color: var(--text-primary); }
+    .date-input:focus { outline: none; border-color: var(--blue-mid); }
+    .session-actions { display: flex; align-items: center; gap: 10px; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 0.5px solid var(--border); flex-wrap: wrap; }
+    .save-btn { padding: 9px 20px; background: var(--teal-mid); color: white; border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 500; font-family: inherit; cursor: pointer; transition: opacity 0.15s; }
+    .save-btn:hover { opacity: 0.88; }
+    .load-prev-btn { padding: 8px 14px; background: transparent; color: var(--text-secondary); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.15s; }
+    .load-prev-btn:hover { background: var(--surface-2); }
+    .clear-btn { padding: 8px 14px; background: transparent; color: var(--text-muted); border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.15s; }
+    .clear-btn:hover { color: var(--red-dark); border-color: var(--red-dark); background: var(--red-light); }
+    .save-status { font-size: 13px; color: var(--teal-dark); font-weight: 500; opacity: 0; transition: opacity 0.3s; }
+    .save-status.show { opacity: 1; }
+
+    /* ── Swing / Z2 / Rest cards ── */
+    .info-hero { display: flex; align-items: center; gap: 1.25rem; padding: 1.125rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; }
+    .info-hero.swing-hero { background: var(--amber-light); }
+    .info-hero.z2-hero { background: var(--green-light); }
+    .info-hero-icon { font-size: 36px; flex-shrink: 0; }
+    .info-hero-title { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+    .info-hero.swing-hero .info-hero-title { color: var(--amber-dark); }
+    .info-hero.z2-hero .info-hero-title { color: var(--green-dark); }
+    .info-hero-sub { font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+    .protocol-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 1.25rem; }
+    .protocol-metric { background: var(--surface-2); border-radius: var(--radius-md); padding: 10px 12px; }
+    .protocol-metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 3px; }
+    .protocol-metric-val { font-size: 16px; font-weight: 600; }
+    .protocol-metric-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+    .protocol-steps { background: var(--surface-2); border-radius: var(--radius-md); padding: 14px; margin-bottom: 1.25rem; }
+    .protocol-steps-title { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+    .protocol-list { list-style: none; }
+    .protocol-list li { font-size: 13px; color: var(--text-secondary); padding: 4px 0; border-bottom: 0.5px solid var(--border); line-height: 1.5; }
+    .protocol-list li:last-child { border-bottom: none; }
+    .protocol-list li::before { content: "→ "; color: var(--amber-mid); font-weight: 600; }
+    .protocol-list.z2 li::before { color: var(--green-mid); }
+
+    /* ── Z2 log fields ── */
+    .z2-log-section { background: var(--surface-2); border-radius: var(--radius-md); padding: 14px; margin-bottom: 1.25rem; }
+    .z2-log-title { font-size: 13px; font-weight: 500; margin-bottom: 12px; }
+    .z2-log-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+    .z2-log-field label { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+    .z2-log-field input, .z2-log-field textarea { width: 100%; padding: 7px 10px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; background: var(--surface); color: var(--text-primary); }
+    .z2-log-field input:focus, .z2-log-field textarea:focus { outline: none; border-color: var(--green-mid); }
+    .z2-log-field input.logged { background: var(--teal-light); border-color: var(--teal-mid); }
+    .z2-log-field textarea { resize: vertical; min-height: 58px; }
+    .z2-log-wide { grid-column: 1 / -1; }
+    .hr-zone-bar { margin-bottom: 1.25rem; padding: 12px 14px; background: var(--surface-2); border-radius: var(--radius-md); }
+    .hr-bar-title { font-size: 12px; font-weight: 500; margin-bottom: 8px; }
+    .hr-zones { display: flex; gap: 3px; height: 22px; border-radius: 5px; overflow: hidden; margin-bottom: 5px; }
+    .hr-zone { display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; }
+    .hz1 { background: #9FE1CB; flex: 1; color: #085041; }
+    .hz2 { background: var(--green-mid); flex: 1.4; color: white; }
+    .hz3 { background: #EF9F27; flex: 1; color: white; }
+    .hz4 { background: #D85A30; flex: 0.8; color: white; }
+    .hz5 { background: #A32D2D; flex: 0.6; color: white; }
+    .hr-zone-active { outline: 2px solid var(--green-dark); outline-offset: 2px; border-radius: 3px; }
+    .hr-label-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); }
+
+    /* ── Calf rehab ── */
+    .calf-block { margin-top: 1.25rem; padding: 12px 14px; background: var(--teal-light); border-radius: var(--radius-md); border-left: 3px solid var(--teal-mid); }
+    .calf-heading { font-size: 12px; font-weight: 600; color: var(--teal-dark); margin-bottom: 4px; }
+    .calf-text { font-size: 13px; color: #1a3d30; line-height: 1.6; }
+
+    /* ── Progress bar ── */
+    .cal-row { display: flex; align-items: center; gap: 12px; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 0.5px solid var(--border); }
+    .cal-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+    .cal-track { flex: 1; height: 5px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+    .cal-fill { height: 100%; border-radius: 99px; background: var(--teal-mid); }
+    .cal-val { font-size: 12px; font-weight: 500; white-space: nowrap; }
+
+    /* ── History ── */
+    .history-controls { display: flex; gap: 10px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .history-filter { padding: 7px 12px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); font-size: 13px; font-family: inherit; background: var(--surface); color: var(--text-primary); cursor: pointer; }
+    .clear-all-btn { padding: 7px 14px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-md); background: transparent; color: var(--text-muted); font-size: 13px; font-family: inherit; cursor: pointer; margin-left: auto; transition: all 0.15s; }
+    .clear-all-btn:hover { color: var(--red-dark); border-color: var(--red-dark); background: var(--red-light); }
+    .history-empty { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 14px; }
+    .history-session { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+    .history-session-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .history-session-title { font-size: 14px; font-weight: 600; }
+    .history-session-date { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .history-ex { border-bottom: 0.5px solid var(--border); padding: 8px 0; }
+    .history-ex:last-child { border-bottom: none; }
+    .history-ex-name { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+    .history-sets { display: flex; gap: 5px; flex-wrap: wrap; }
+    .history-set-pill { font-size: 11px; padding: 2px 9px; background: var(--surface-2); border-radius: 99px; color: var(--text-secondary); }
+    .history-set-pill.has-data { background: var(--teal-light); color: var(--teal-dark); }
+    .history-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-style: italic; }
+    .delete-session-btn { padding: 4px 10px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); background: transparent; color: var(--text-muted); font-size: 12px; font-family: inherit; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+    .delete-session-btn:hover { color: var(--red-dark); border-color: var(--red-dark); background: var(--red-light); }
+
+    /* ── Safety ── */
+    .safety-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-top: 1.5rem; }
+    .safety-title { font-size: 14px; font-weight: 600; margin-bottom: 1rem; }
+    .safety-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    .safety-card { padding: 10px 12px; background: var(--surface-2); border-radius: var(--radius-md); }
+    .safety-card-title { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+    .safety-card-text { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+    footer { text-align: center; font-size: 12px; color: var(--text-muted); padding: 2rem 1rem 1rem; }
+
+    @media (max-width: 640px) {
+      .session-header { flex-direction: column; }
+      .session-title { font-size: 17px; }
+      .main-wrap { padding: 1rem 1rem 3rem; }
+      .day-strip { grid-template-columns: repeat(6, 1fr); gap: 4px; }
+      .day-cell { padding: 6px 3px; }
+      .day-name { font-size: 9px; }
+      .day-type { font-size: 10px; }
+      .log-header, .set-row { grid-template-columns: 24px 68px 62px 58px 1fr; gap: 4px; }
+      .set-row input { padding: 5px 6px; font-size: 12px; }
+      .trm-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-left">
+    <div class="header-icon">💪</div>
+    <div>
+      <div class="site-title">Calf Recovery — StrongFirst</div>
+      <div class="site-sub">8-week ladder program · KBs, sandbag, ruck, kayak</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-badge" id="header-week-badge">Week 1</span>
+  </div>
+</header>
+
+<main class="main-wrap">
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('program',this)">Program</button>
+    <button class="tab-btn" onclick="switchTab('testing',this)">TRM Testing</button>
+    <button class="tab-btn" onclick="switchTab('history',this)">History</button>
+  </div>
+
+  <!-- ══════════════ PROGRAM TAB ══════════════ -->
+  <div class="tab-panel active" id="tab-program">
+    <div class="week-nav-wrap">
+      <span class="week-nav-label">Week:</span>
+      <div class="week-pills" id="week-pills"></div>
+    </div>
+    <div class="day-strip" id="day-strip"></div>
+    <div id="session-view"></div>
+
+    <div class="safety-section">
+      <div class="safety-title">⚠️ Program notes &amp; calf guardrails</div>
+      <div class="safety-grid">
+        <div class="safety-card"><div class="safety-card-title">StrongFirst circuit</div><div class="safety-card-text">All three lifts are done in slow-circuit order: squat → press → pull. Complete all rungs of a ladder before starting the next ladder.</div></div>
+        <div class="safety-card"><div class="safety-card-title">TRM weight is fixed</div><div class="safety-card-text">The weight stays the same for all 8 weeks. Volume (reps/ladders) increases, not intensity. Set your TRM in the Testing tab first.</div></div>
+        <div class="safety-card"><div class="safety-card-title">Calf zero-load rule</div><div class="safety-card-text">Goblet squat to a box only — no full depth until pain-free. No ankle drive on press. Stop any set if calf tightens.</div></div>
+        <div class="safety-card"><div class="safety-card-title">Swing days are easy</div><div class="safety-card-text">Swings on Tue/Fri are recovery — not a workout. 7 reps on the minute, 15 sets, maximally explosive but low fatigue.</div></div>
+        <div class="safety-card"><div class="safety-card-title">Week 7 is deload</div><div class="safety-card-text">Volume drops significantly. Don't skip it — it sets up the week 8 test. Trust the process.</div></div>
+        <div class="safety-card"><div class="safety-card-title">Week 8 is testing</div><div class="safety-card-text">Test your TRM again. Shoot for a PR vs. your baseline. Log your results in the Testing tab.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ TESTING TAB ══════════════ -->
+  <div class="tab-panel" id="tab-testing">
+    <div class="card">
+      <div class="card-title">TRM Testing — Find Your Working Weight</div>
+      <div class="card-sub">For each movement pattern, enter how many reps you can perform with perfect technique at each KB weight. Your 8–10 TRM is the heaviest weight where you hit 8–10 clean reps before technical breakdown. This weight will be used across all 8 weeks.</div>
+      <div class="trm-note">⚠️ Do these tests on separate days with full rest. Test squat one day, press another, pull another. Do NOT rush — your TRM determines the entire program.</div>
+      <div class="trm-grid" id="trm-grid"></div>
+      <div style="font-size:13px; color: var(--text-secondary); margin-top: 0.5rem; line-height:1.6;">Once you save all three TRMs, the program will auto-fill your working weights and show a recommendation on every exercise. Return here after week 8 to retest and start a new cycle.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ HISTORY TAB ══════════════ -->
+  <div class="tab-panel" id="tab-history">
+    <div class="history-controls">
+      <select class="history-filter" id="history-filter" onchange="renderHistory()">
+        <option value="all">All sessions</option>
+        <option value="A">Session A (Monday)</option>
+        <option value="B">Session B (Wednesday)</option>
+        <option value="C">Session C (Saturday)</option>
+        <option value="swing">Swing days</option>
+        <option value="z2">Zone 2 days</option>
+      </select>
+      <button class="clear-all-btn" onclick="clearAllHistory()">Clear all history</button>
+    </div>
+    <div id="history-view"></div>
+  </div>
+</main>
+
+<footer>StrongFirst Simple Strength Plan · 8-week cycle · <span id="session-count">0</span> sessions logged</footer>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+const STORAGE_KEY = 'calf_sf_log_v2';
+const TRM_KEY = 'calf_sf_trm';
+const KB_WEIGHTS = [20, 35, 50]; // lbs
+
+// StrongFirst 8-week ladder plan
+// Each week has sessions A, B, C
+// Each session has ladders for squat, press, pull
+// Ladder = array of rung counts per round e.g. [2,4,6] means round1=2reps, round2=4reps, round3=6reps
+// numLadders = how many times to repeat the rung sequence
+
+const PLAN = {
+  1: {
+    A: { ladders: 2, squat: [2,4,2], press: [2,4,2], pull: [2,4,2], session: 'A' },
+    B: { ladders: 2, squat: [2,6,2], press: [2,4,6], pull: [2,4,2], session: 'B' },
+    C: { ladders: 2, squat: [2,4,6], press: [2,6,2], pull: [2,4,6], session: 'C' },
+  },
+  2: {
+    A: { ladders: 2, squat: [2,4,6], press: [2,4,6], pull: [2,4,6], session: 'A' },
+    B: { ladders: 2, squat: [2,6,2], press: [2,4,6], pull: [2,4,2], session: 'B' },
+    C: { ladders: 3, squat: [2,4,2], press: [2,4,2], pull: [2,4,2], session: 'C' },
+  },
+  3: {
+    A: { ladders: 3, squat: [2,4,6], press: [2,4,6], pull: [2,4,6], session: 'A' },
+    B: { ladders: 2, squat: [2,6,2], press: [2,4,6], pull: [2,4,2], session: 'B' },
+    C: { ladders: 3, squat: [2,4,6], press: [2,4,6], pull: [2,4,6], session: 'C' },
+  },
+  4: {
+    A: { ladders: 3, squat: [2,4,6], press: [2,4,6], pull: [2,4,6], session: 'A' },
+    B: { ladders: 3, squat: [2,6,2], press: [2,6,4], pull: [2,6,2], session: 'B' },
+    C: { ladders: 3, squat: [2,4,6], press: [2,4,6], pull: [2,4,6], session: 'C' },
+  },
+  5: {
+    A: { ladders: 4, squat: [2,4,6], press: [2,4,6], pull: [2,4,6], session: 'A' },
+    B: { ladders: 3, squat: [2,6,2], press: [2,6,4], pull: [2,6,2], session: 'B' },
+    C: { ladders: 4, squat: [2,4,6], press: [2,4,6], pull: [2,4,6], session: 'C' },
+  },
+  6: {
+    A: { ladders: 5, squat: [2,4,6], press: [2,4,6], pull: [2,4,6], session: 'A' },
+    B: { ladders: 4, squat: [2,6,2], press: [2,6,4], pull: [2,6,2], session: 'B' },
+    C: { ladders: 5, squat: [2,4,6], press: [2,4,6], pull: [2,4,6], session: 'C' },
+  },
+  7: { // Deload
+    A: { ladders: 2, squat: [2,4], press: [2,4], pull: [2,4], session: 'A', deload: true },
+    B: { ladders: 2, squat: [2,4], press: [2,4], pull: [2,4], session: 'B', deload: true },
+    C: { ladders: 2, squat: [2,4], press: [2,4], pull: [2,4], session: 'C', deload: true },
+  },
+  8: { // Testing
+    A: { test: 'squat', session: 'A', testing: true },
+    B: { test: 'press', session: 'B', testing: true },
+    C: { test: 'pull', session: 'C', testing: true },
+  }
+};
+
+// Weekly schedule: Mon=A, Tue=swing, Wed=B, Thu=rest, Fri=z2kayak, Sat=C
+const WEEK_DAYS = [
+  { key: 'mon', name: 'Mon', type: 'lift', session: 'A' },
+  { key: 'tue', name: 'Tue', type: 'swing', session: null },
+  { key: 'wed', name: 'Wed', type: 'lift', session: 'B' },
+  { key: 'thu', name: 'Thu', type: 'rest', session: null },
+  { key: 'fri', name: 'Fri', type: 'z2', session: null },
+  { key: 'sat', name: 'Sat', type: 'lift', session: 'C' },
+];
+
+const EXERCISES = {
+  squat: { name: 'Goblet squat (to box)', icon: '🏋️', equip: 'KB', trmKey: 'squat', note: 'Squat to box; heels elevated if needed; hinge back, knees track toes; full reset at bottom. Both hands hold KB at chest.' },
+  press: { name: 'Seated single-arm KB press', icon: '💪', equip: 'KB', trmKey: 'press', note: 'Seated on floor, legs crossed or extended. Strict press — no leg drive, no calf engagement. Pack the shoulder; press to full lockout.' },
+  pull:  { name: 'Bent-over single-arm KB row', icon: '🔗', equip: 'KB', trmKey: 'pull', note: 'Hinge at hips; brace on knee or bench. Drive elbow to hip; squeeze lat at top. No calf engagement. Per side.' },
+};
+
+const CALF_NOTES = {
+  lift: 'End of session: seated ankle circles 2 × 20 each direction. Seated towel stretch 3 × 30 sec. Elevate feet 5 min.',
+  swing: 'Post-swings: elevation 10 min. Seated dorsiflexion stretch 3 × 30 sec. Note any swelling vs. start of session.',
+  z2: 'Getting in/out of kayak: use arms on dock — zero calf push-off. Post-session: elevation 10 min, gentle ankle circles.',
+  rest: 'Rest day calf protocol: contrast soak (warm 5 min, ice 2 min) × 2. Gentle lacrosse ball massage along soleus.',
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let currentWeek = 1;
+let currentDayIdx = 0;
+
+// ═══════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════
+function loadLog() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+function saveLog(log) { localStorage.setItem(STORAGE_KEY, JSON.stringify(log)); updateSessionCount(); }
+function loadTRM() { try { return JSON.parse(localStorage.getItem(TRM_KEY)) || {}; } catch { return {}; } }
+function saveTRM(trm) { localStorage.setItem(TRM_KEY, JSON.stringify(trm)); }
+function updateSessionCount() { document.getElementById('session-count').textContent = loadLog().length; }
+
+// ═══════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'history') renderHistory();
+  if (name === 'testing') renderTRMTesting();
+}
+
+// ═══════════════════════════════════════════════
+// WEEK NAVIGATION
+// ═══════════════════════════════════════════════
+function buildWeekNav() {
+  const container = document.getElementById('week-pills');
+  container.innerHTML = '';
+  for (let w = 1; w <= 8; w++) {
+    const btn = document.createElement('button');
+    const label = w === 7 ? `W${w} Deload` : w === 8 ? `W${w} Test` : `W${w}`;
+    btn.className = 'week-pill' + (w === currentWeek ? ' active' : '');
+    btn.textContent = label;
+    btn.onclick = () => { currentWeek = w; buildWeekNav(); buildDayStrip(); renderSession(); };
+    container.appendChild(btn);
+  }
+  document.getElementById('header-week-badge').textContent = currentWeek === 7 ? 'Week 7 — Deload' : currentWeek === 8 ? 'Week 8 — Test' : `Week ${currentWeek}`;
+}
+
+// ═══════════════════════════════════════════════
+// DAY STRIP
+// ═══════════════════════════════════════════════
+function buildDayStrip() {
+  const strip = document.getElementById('day-strip');
+  strip.innerHTML = '';
+  WEEK_DAYS.forEach((d, i) => {
+    const cell = document.createElement('div');
+    const isRest = d.type === 'rest';
+    cell.className = 'day-cell' + (isRest ? ' rest-cell' : '') + (i === currentDayIdx ? ' active' : '');
+    const typeLabel = d.type === 'lift' ? `Session ${d.session}` : d.type === 'swing' ? 'Swings' : d.type === 'z2' ? 'Kayak' : 'Rest';
+    const typeClass = d.type === 'lift' ? 'lift' : d.type === 'swing' ? 'swing' : d.type === 'z2' ? 'z2' : 'rest';
+    cell.innerHTML = `<div class="day-name">${d.name}</div><div class="day-type ${typeClass}">${typeLabel}</div>`;
+    if (!isRest) cell.onclick = () => { currentDayIdx = i; buildDayStrip(); renderSession(); };
+    strip.appendChild(cell);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// SESSION RENDERING
+// ═══════════════════════════════════════════════
+function renderSession() {
+  const day = WEEK_DAYS[currentDayIdx];
+  const view = document.getElementById('session-view');
+  if (day.type === 'rest') { view.innerHTML = renderRestDay(); return; }
+  if (day.type === 'swing') { view.innerHTML = renderSwingDay(); return; }
+  if (day.type === 'z2') { view.innerHTML = renderKayakDay(); return; }
+  // Lift day
+  const week = currentWeek;
+  const sess = day.session;
+  const plan = PLAN[week][sess];
+  if (plan.testing) { view.innerHTML = renderTestingDay(plan, sess); return; }
+  view.innerHTML = renderLiftDay(plan, sess, week, day);
+  // Restore saved inputs
+  restoreInputs(week, sess);
+}
+
+// ── Lift day ──
+function renderLiftDay(plan, sess, week, day) {
+  const trm = loadTRM();
+  const totalReps = (p) => p.reduce((a,b) => a+b, 0) * plan.ladders;
+
+  const ladderDisplay = (arr) => arr.map((r,i) => {
+    const sep = i < arr.length - 1 ? '<span class="rung-sep">→</span>' : '';
+    return `<span class="rung-pill">${r}</span>${sep}`;
+  }).join('');
+
+  const trmBadge = (key) => {
+    const w = trm[key];
+    if (!w) return `<span class="no-trm-display">⚠️ Set TRM first</span>`;
+    return `<span class="trm-weight-display">🎯 ${w} lbs</span>`;
+  };
+
+  const deloadNote = plan.deload ? `<div class="circuit-box" style="background:var(--gray-light);border-color:var(--text-muted);color:var(--text-secondary)"><strong>Week 7 — Deload.</strong> Keep the same weight but take it easy. Focus on technique, not effort. This week sets up your week 8 test.</div>` : '';
+
+  const sessionBadge = sess === 'A' ? 'badge-a' : sess === 'B' ? 'badge-b' : 'badge-c';
+
+  const exRows = ['squat','press','pull'].map(pattern => {
+    const ex = EXERCISES[pattern];
+    const rungs = plan[pattern];
+    const numSets = rungs.length * plan.ladders;
+    // Build set rows: label each with its rung rep target, cycling through ladders
+    let setRowsHtml = '';
+    let setIdx = 0;
+    for (let l = 0; l < plan.ladders; l++) {
+      for (let r = 0; r < rungs.length; r++) {
+        const targetReps = rungs[r];
+        const isEach = (pattern === 'press' || pattern === 'pull');
+        setRowsHtml += `
+          <div class="set-row">
+            <span class="set-num">${setIdx+1}</span>
+            <input type="number" placeholder="lbs" min="0" id="inp-${sess}-${pattern}-${setIdx}-weight" oninput="markLogged(this)" />
+            <input type="number" placeholder="reps" min="0" id="inp-${sess}-${pattern}-${setIdx}-reps" oninput="markLogged(this)" />
+            <input type="number" placeholder="RPE" min="1" max="10" step="0.5" id="inp-${sess}-${pattern}-${setIdx}-rpe" oninput="markLogged(this)" />
+            <span class="target-reps-badge">L${l+1}R${r+1}: ${targetReps}${isEach?' ea':''} reps</span>
+          </div>`;
+        setIdx++;
+      }
+    }
+    return `
+      <div class="exercise-block">
+        <div class="ex-header">
+          <div class="ex-info">
+            <span class="ex-name">${ex.icon} ${ex.name}</span>
+            <div class="ex-meta">
+              <span class="ex-prescribed">${plan.ladders} ladder${plan.ladders>1?'s':''} of ${rungs.join('→')} reps</span>
+              ${trmBadge(pattern)}
+            </div>
+            <div class="ex-note-text">${ex.note}</div>
+          </div>
+        </div>
+        <div class="log-section">
+          <div class="log-header"><span></span><span>Weight</span><span>Reps done</span><span>RPE</span><span>Target</span></div>
+          <div class="set-rows">${setRowsHtml}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="card">
+      <div class="session-header">
+        <div>
+          <div class="session-title">Session ${sess} — ${day.name}</div>
+          <div class="session-sub">${week === 7 ? 'Deload week' : `Week ${week} of 8`} · ${plan.ladders} ladder${plan.ladders>1?'s':''} · slow circuit</div>
+        </div>
+        <span class="session-badge ${sessionBadge}">Session ${sess}</span>
+      </div>
+      <div class="date-row">
+        <span class="date-label">Date:</span>
+        <input type="date" class="date-input" id="session-date" value="${new Date().toISOString().split('T')[0]}" />
+        <button class="load-prev-btn" onclick="loadPrevSession('${sess}')">↺ Last session</button>
+      </div>
+      ${deloadNote}
+      <div class="ladder-info">
+        <div class="ladder-info-title">Today's ladders</div>
+        <div class="ladder-table">
+          <span class="lh"></span><span class="lh">Squat</span><span class="lh">Press</span><span class="lh">Pull</span>
+          ${Array.from({length: plan.ladders}, (_,li) => `
+            <span style="font-size:12px;color:var(--text-muted);font-weight:600;">L${li+1}</span>
+            <div class="ladder-rung">${plan.squat.map((r,i)=>`<span class="rung-pill">${r}</span>${i<plan.squat.length-1?'<span class="rung-sep">→</span>':''}`).join('')}</div>
+            <div class="ladder-rung">${plan.press.map((r,i)=>`<span class="rung-pill">${r}</span>${i<plan.press.length-1?'<span class="rung-sep">→</span>':''}`).join('')}</div>
+            <div class="ladder-rung">${plan.pull.map((r,i)=>`<span class="rung-pill">${r}</span>${i<plan.pull.length-1?'<span class="rung-sep">→</span>':''}`).join('')}</div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="circuit-box">
+        <strong>Slow circuit order:</strong> Goblet squat → rest 1 min → Seated press → rest 1 min → KB row → rest 2–3 min → repeat next rung.<br>
+        Rest ~1 min after 2 &amp; 4 rep sets · rest ~1–2 min after 6 rep sets · rest 2–3 min between full ladders.
+      </div>
+      <div class="exercises-wrap">${exRows}</div>
+      <div class="calf-block">
+        <div class="calf-heading">🩹 Calf rehab — end of session</div>
+        <div class="calf-text">${CALF_NOTES.lift}</div>
+      </div>
+      <div class="session-actions">
+        <button class="save-btn" onclick="saveSession('${sess}',${week})">Save session</button>
+        <button class="clear-btn" onclick="clearInputs()">Clear</button>
+        <span class="save-status" id="save-status">✓ Saved</span>
+      </div>
+    </div>`;
+}
+
+// ── Swing day ──
+function renderSwingDay() {
+  const trm = loadTRM();
+  const swingWt = trm.swing || null;
+  return `
+    <div class="card">
+      <div class="session-header">
+        <div>
+          <div class="session-title">Swings + Get-ups — Tuesday</div>
+          <div class="session-sub">StrongFirst active recovery protocol</div>
+        </div>
+        <span class="session-badge badge-swing">Easy Day</span>
+      </div>
+      <div class="date-row">
+        <span class="date-label">Date:</span>
+        <input type="date" class="date-input" id="session-date" value="${new Date().toISOString().split('T')[0]}" />
+      </div>
+      <div class="info-hero swing-hero">
+        <div class="info-hero-icon">🔔</div>
+        <div>
+          <div class="info-hero-title">Active recovery — keep it easy</div>
+          <div class="info-hero-sub">This is NOT a workout. The goal is blood flow and recovery between main sessions. Maximally explosive swings but low total fatigue. Do not add finishers.</div>
+        </div>
+      </div>
+      <div class="protocol-grid">
+        <div class="protocol-metric"><div class="protocol-metric-label">Swings</div><div class="protocol-metric-val">7 reps</div><div class="protocol-metric-sub">on the top of each minute</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">Sets</div><div class="protocol-metric-val">15 sets</div><div class="protocol-metric-sub">= 105 total swings</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">Work:rest</div><div class="protocol-metric-val">1:5</div><div class="protocol-metric-sub">~10 sec work, ~50 sec rest</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">Get-ups</div><div class="protocol-metric-val">10 reps</div><div class="protocol-metric-sub">5 each side, after swings</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">KB weight</div><div class="protocol-metric-val">${swingWt ? swingWt+' lbs' : 'Set below'}</div><div class="protocol-metric-sub">relatively light</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">Get-up weight</div><div class="protocol-metric-val">Light</div><div class="protocol-metric-sub">same or lighter KB</div></div>
+      </div>
+      <div class="protocol-steps">
+        <div class="protocol-steps-title">Execution</div>
+        <ul class="protocol-list">
+          <li>Two-hand swings — hike the KB back hard, snap hips, float at top. Explosive every rep.</li>
+          <li>Start a new set every 60 seconds exactly. Set a timer.</li>
+          <li>After 15 sets of swings, rest 2–3 min then move to get-ups.</li>
+          <li>Get-ups: slow and deliberate, single reps alternating sides. Rest between each rep as needed.</li>
+          <li>Calf note: keep flat feet on swings — no tip-toeing. Get-up: use controlled movement, avoid calf push-off on the rise.</li>
+        </ul>
+      </div>
+      <div class="z2-log-section">
+        <div class="z2-log-title">📋 Log this session</div>
+        <div class="z2-log-grid">
+          <div class="z2-log-field"><label>Swing KB (lbs)</label><input type="number" id="z2-swingwt" placeholder="e.g. 35" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field"><label>Sets completed</label><input type="number" id="z2-sets" placeholder="15" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field"><label>Get-up KB (lbs)</label><input type="number" id="z2-getupwt" placeholder="e.g. 20" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field"><label>Get-ups done</label><input type="number" id="z2-getups" placeholder="10" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field"><label>Calf feel (1–10)</label><input type="number" id="z2-calffeel" placeholder="10=no issue" min="1" max="10" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field z2-log-wide"><label>Notes</label><textarea id="z2-notes" placeholder="How did the swings feel? Calf status, energy level..."></textarea></div>
+        </div>
+      </div>
+      <div class="calf-block">
+        <div class="calf-heading">🩹 Calf rehab — end of session</div>
+        <div class="calf-text">${CALF_NOTES.swing}</div>
+      </div>
+      <div class="session-actions">
+        <button class="save-btn" onclick="saveZ2Session('swing')" style="background:var(--amber-mid)">Save session</button>
+        <button class="clear-btn" onclick="clearInputs()">Clear</button>
+        <span class="save-status" id="save-status">✓ Saved</span>
+      </div>
+    </div>`;
+}
+
+// ── Kayak / Z2 day ──
+function renderKayakDay() {
+  return `
+    <div class="card">
+      <div class="session-header">
+        <div>
+          <div class="session-title">Zone 2 Kayak — Friday</div>
+          <div class="session-sub">Flat water · active recovery · Garmin zone 2</div>
+        </div>
+        <span class="session-badge badge-z2">Zone 2</span>
+      </div>
+      <div class="date-row">
+        <span class="date-label">Date:</span>
+        <input type="date" class="date-input" id="session-date" value="${new Date().toISOString().split('T')[0]}" />
+      </div>
+      <div class="info-hero z2-hero">
+        <div class="info-hero-icon">🛶</div>
+        <div>
+          <div class="info-hero-title">Zone 2 kayak — zero calf involvement</div>
+          <div class="info-hero-sub">Flat water paddling is ideal during calf recovery. Pure upper body and core drive. Stay in Garmin zone 2 the full session. Chest strap preferred over wrist HR while paddling.</div>
+        </div>
+      </div>
+      <div class="protocol-grid">
+        <div class="protocol-metric"><div class="protocol-metric-label">Duration</div><div class="protocol-metric-val">45–60 min</div><div class="protocol-metric-sub">steady state</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">HR target</div><div class="protocol-metric-val">Zone 2</div><div class="protocol-metric-sub">60–70% max HR</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">Terrain</div><div class="protocol-metric-val">Flat lake</div><div class="protocol-metric-sub">calf protection</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">Equipment</div><div class="protocol-metric-val">Kayak</div><div class="protocol-metric-sub">+ Garmin HR</div></div>
+      </div>
+      <div class="hr-zone-bar">
+        <div class="hr-bar-title">Heart rate zone target</div>
+        <div class="hr-zones">
+          <div class="hr-zone hz1">Z1</div><div class="hr-zone hz2 hr-zone-active">Z2 ← stay here</div>
+          <div class="hr-zone hz3">Z3</div><div class="hr-zone hz4">Z4</div><div class="hr-zone hz5">Z5</div>
+        </div>
+        <div class="hr-label-row"><span>50%</span><span>60%</span><span>70%</span><span>80%</span><span>90%+</span></div>
+      </div>
+      <div class="protocol-steps">
+        <div class="protocol-steps-title">Execution cues</div>
+        <ul class="protocol-list z2">
+          <li>3–5 min easy warm-up paddle before checking HR</li>
+          <li>Drive from torso rotation — not arm-pull. Core is the engine.</li>
+          <li>If HR drops below zone 2: increase cadence or shorten glides</li>
+          <li>If HR spikes above zone 2: slow glide and let it settle</li>
+          <li>Getting in/out: arms on dock — zero calf push-off needed</li>
+        </ul>
+      </div>
+      <div class="z2-log-section">
+        <div class="z2-log-title">📋 Log this session</div>
+        <div class="z2-log-grid">
+          <div class="z2-log-field"><label>Duration (min)</label><input type="number" id="z2-duration" placeholder="e.g. 52" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field"><label>Avg HR (bpm)</label><input type="number" id="z2-avghr" placeholder="e.g. 138" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field"><label>Max HR (bpm)</label><input type="number" id="z2-maxhr" placeholder="e.g. 152" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field"><label>Time in Z2 (%)</label><input type="number" id="z2-timeinzone" placeholder="e.g. 84" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field"><label>Calories</label><input type="number" id="z2-cals" placeholder="from Garmin" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field"><label>Calf feel (1–10)</label><input type="number" id="z2-calffeel" placeholder="10=no issue" oninput="markLogged(this)" /></div>
+          <div class="z2-log-field z2-log-wide"><label>Notes</label><textarea id="z2-notes" placeholder="Conditions, calf status, how HR responded..."></textarea></div>
+        </div>
+      </div>
+      <div class="calf-block">
+        <div class="calf-heading">🩹 Calf rehab — end of session</div>
+        <div class="calf-text">${CALF_NOTES.z2}</div>
+      </div>
+      <div class="session-actions">
+        <button class="save-btn" onclick="saveZ2Session('z2')" style="background:var(--green-mid)">Save session</button>
+        <button class="clear-btn" onclick="clearInputs()">Clear</button>
+        <span class="save-status" id="save-status">✓ Saved</span>
+      </div>
+    </div>`;
+}
+
+// ── Rest day ──
+function renderRestDay() {
+  return `
+    <div class="card">
+      <div class="session-header">
+        <div><div class="session-title">Rest Day — Thursday</div><div class="session-sub">Full recovery · calf rehab protocol</div></div>
+        <span class="session-badge badge-rest">Rest</span>
+      </div>
+      <div style="padding:2rem 0; text-align:center; color:var(--text-muted);">
+        <div style="font-size:40px;margin-bottom:12px;">😴</div>
+        <div style="font-size:15px;font-weight:500;margin-bottom:8px;color:var(--text-primary)">Recovery day</div>
+        <div style="font-size:13px;line-height:1.7;max-width:380px;margin:0 auto;">Light walking only. No training. Let the adaptations from Mon–Wed set in before the Fri kayak and Sat lifting session.</div>
+      </div>
+      <div class="calf-block">
+        <div class="calf-heading">🩹 Calf rehab — today's protocol</div>
+        <div class="calf-text">${CALF_NOTES.rest}</div>
+      </div>
+    </div>`;
+}
+
+// ── Testing day (week 8) ──
+function renderTestingDay(plan, sess) {
+  const patternNames = { squat: 'Goblet squat', press: 'Seated single-arm press', pull: 'Bent-over single-arm row' };
+  const ex = EXERCISES[plan.test];
+  return `
+    <div class="card">
+      <div class="session-header">
+        <div><div class="session-title">Week 8 Test — Session ${sess}</div><div class="session-sub">Test: ${patternNames[plan.test]}</div></div>
+        <span class="session-badge badge-test">Testing</span>
+      </div>
+      <div class="circuit-box" style="background:var(--teal-light);border-color:var(--teal-mid);color:var(--teal-dark)">
+        <strong>Test your ${plan.test} TRM today.</strong> Work up to your current working weight, then attempt additional reps or try the next KB up. Log your result in the TRM Testing tab. Compare to your baseline from before week 1.
+      </div>
+      <div class="exercise-block">
+        <div class="ex-name">${ex.icon} ${ex.name}</div>
+        <div class="ex-note-text" style="margin-top:6px">${ex.note}</div>
+        <div class="log-section" style="margin-top:12px">
+          <div class="log-header"><span></span><span>Weight</span><span>Reps done</span><span>RPE</span><span>Notes</span></div>
+          <div class="set-rows">
+            ${[1,2,3,4,5].map(si => `
+              <div class="set-row">
+                <span class="set-num">${si}</span>
+                <input type="number" placeholder="lbs" id="inp-test-${plan.test}-${si-1}-weight" oninput="markLogged(this)" />
+                <input type="number" placeholder="reps" id="inp-test-${plan.test}-${si-1}-reps" oninput="markLogged(this)" />
+                <input type="number" placeholder="RPE" min="1" max="10" step="0.5" id="inp-test-${plan.test}-${si-1}-rpe" oninput="markLogged(this)" />
+                <input type="text" placeholder="note" id="inp-test-${plan.test}-${si-1}-note" />
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="session-actions">
+        <button class="save-btn" onclick="saveSession('${sess}',8)">Save session</button>
+        <button class="clear-btn" onclick="clearInputs()">Clear</button>
+        <span class="save-status" id="save-status">✓ Saved</span>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// TRM TESTING TAB
+// ═══════════════════════════════════════════════
+function renderTRMTesting() {
+  const trm = loadTRM();
+  const patterns = [
+    { key: 'squat', label: 'Squat Pattern', icon: '🏋️', exName: 'Goblet squat to box', note: 'Use your heaviest KB for a warm-up, then test each weight.' },
+    { key: 'press', label: 'Press Pattern', icon: '💪', exName: 'Seated single-arm KB press', note: 'Seated on floor. Test each arm. Log the reps per arm.' },
+    { key: 'pull',  label: 'Pull Pattern',  icon: '🔗', exName: 'Bent-over single-arm KB row', note: 'Per arm. Log total reps per set per side.' },
+    { key: 'swing', label: 'Swing Weight',  icon: '🔔', exName: '2-hand KB swing (easy day)', note: 'Pick a weight that feels explosive and relatively easy for 15 sets of 7.' },
+  ];
+  const grid = document.getElementById('trm-grid');
+  grid.innerHTML = patterns.map(p => {
+    const currentTRM = trm[p.key];
+    const rows = KB_WEIGHTS.map(w => `
+      <div class="trm-weight-row">
+        <span class="trm-weight-label">${w} lbs</span>
+        <input type="number" class="trm-rep-input" id="trm-${p.key}-${w}" placeholder="reps" min="0" max="30"
+          value="${(trm[p.key+'_reps'] && trm[p.key+'_reps'][w]) || ''}"
+          oninput="updateTRMResult('${p.key}')" />
+        <span class="trm-rep-label">reps</span>
+      </div>`).join('');
+
+    return `
+      <div class="trm-card">
+        <div class="trm-card-title"><span class="trm-card-icon">${p.icon}</span>${p.label}</div>
+        <div class="trm-card-sub">${p.exName} · ${p.note}</div>
+        <div class="trm-weights">${rows}</div>
+        <div class="trm-result ${currentTRM ? 'found' : ''}" id="trm-result-${p.key}">
+          ${currentTRM ? `✓ TRM set: ${currentTRM} lbs` : 'Enter reps above to find your TRM'}
+        </div>
+        <button class="save-trm-btn" onclick="saveTRMPattern('${p.key}')">Save ${p.label} TRM</button>
+      </div>`;
+  }).join('');
+}
+
+function updateTRMResult(patternKey) {
+  const repsData = {};
+  let trmWeight = null;
+  KB_WEIGHTS.forEach(w => {
+    const el = document.getElementById(`trm-${patternKey}-${w}`);
+    if (el && el.value) {
+      const reps = parseInt(el.value);
+      repsData[w] = reps;
+      el.classList.toggle('in-range', reps >= 8 && reps <= 10);
+      if (reps >= 8 && reps <= 10) trmWeight = w;
+    }
+  });
+  const resultEl = document.getElementById(`trm-result-${patternKey}`);
+  if (trmWeight) {
+    resultEl.className = 'trm-result found';
+    resultEl.textContent = `✓ Recommended TRM: ${trmWeight} lbs (${repsData[trmWeight]} reps)`;
+  } else {
+    const hasAny = Object.keys(repsData).length > 0;
+    if (hasAny) {
+      const overloaded = KB_WEIGHTS.filter(w => repsData[w] && repsData[w] < 8);
+      const under = KB_WEIGHTS.filter(w => repsData[w] && repsData[w] > 10);
+      if (under.length && !overloaded.length) {
+        resultEl.className = 'trm-result warning';
+        resultEl.textContent = `All weights feel light — consider a heavier KB or a harder variation.`;
+      } else if (overloaded.length && !under.length) {
+        resultEl.className = 'trm-result warning';
+        resultEl.textContent = `All weights are too heavy — use a lighter KB or easier variation.`;
+      } else {
+        resultEl.className = 'trm-result warning';
+        resultEl.textContent = `No weight lands in 8–10 rep range. Try the weight between entries.`;
+      }
+    } else {
+      resultEl.className = 'trm-result';
+      resultEl.textContent = 'Enter reps above to find your TRM';
+    }
+  }
+}
+
+function saveTRMPattern(patternKey) {
+  const trm = loadTRM();
+  const repsData = {};
+  let trmWeight = null;
+  KB_WEIGHTS.forEach(w => {
+    const el = document.getElementById(`trm-${patternKey}-${w}`);
+    if (el && el.value) {
+      const reps = parseInt(el.value);
+      repsData[w] = reps;
+      if (reps >= 8 && reps <= 10) trmWeight = w;
+    }
+  });
+  if (!trmWeight) {
+    // Use closest to 8-10 range
+    let closest = null, closestDiff = 99;
+    KB_WEIGHTS.forEach(w => {
+      if (repsData[w]) {
+        const diff = Math.abs(repsData[w] - 9);
+        if (diff < closestDiff) { closestDiff = diff; closest = w; }
+      }
+    });
+    trmWeight = closest;
+  }
+  if (trmWeight) {
+    trm[patternKey] = trmWeight;
+    trm[patternKey + '_reps'] = repsData;
+    saveTRM(trm);
+    const resultEl = document.getElementById(`trm-result-${patternKey}`);
+    resultEl.className = 'trm-result found';
+    resultEl.textContent = `✓ TRM saved: ${trmWeight} lbs`;
+    // Re-render session if on program tab to update weight badges
+    if (document.getElementById('tab-program').classList.contains('active')) renderSession();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// LOGGING
+// ═══════════════════════════════════════════════
+function markLogged(input) {
+  input.classList.toggle('logged', !!(input.value && input.value.trim() !== ''));
+}
+
+function clearInputs() {
+  document.querySelectorAll('.set-row input, .z2-log-field input, .z2-log-field textarea').forEach(el => {
+    el.value = ''; el.classList.remove('logged');
+  });
+}
+
+function saveSession(sess, week) {
+  const log = loadLog();
+  const date = document.getElementById('session-date')?.value || new Date().toISOString().split('T')[0];
+  const plan = PLAN[week][sess];
+  const patterns = ['squat','press','pull'];
+  const patternKey = plan.testing ? plan.test : null;
+  const prefix = plan.testing ? `test-${patternKey}` : sess;
+  const exercises = (plan.testing ? [patternKey] : patterns).map(pattern => {
+    const numSets = plan.testing ? 5 : plan[pattern].length * plan.ladders;
+    const sets = Array.from({length: numSets}, (_, si) => ({
+      weight: document.getElementById(`inp-${prefix}-${pattern}-${si}-weight`)?.value || '',
+      reps:   document.getElementById(`inp-${prefix}-${pattern}-${si}-reps`)?.value || '',
+      rpe:    document.getElementById(`inp-${prefix}-${pattern}-${si}-rpe`)?.value || '',
+      note:   document.getElementById(`inp-${prefix}-${pattern}-${si}-note`)?.value || '',
+    }));
+    return { pattern, name: EXERCISES[pattern]?.name || pattern, sets };
+  });
+  const sessionData = { type: 'lift', session: sess, week, date, savedAt: new Date().toISOString(), exercises };
+  const filtered = log.filter(s => !(s.type === 'lift' && s.session === sess && s.week === week && s.date === date));
+  filtered.push(sessionData);
+  filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+  saveLog(filtered);
+  const status = document.getElementById('save-status');
+  if (status) { status.classList.add('show'); setTimeout(() => status.classList.remove('show'), 2500); }
+}
+
+function saveZ2Session(type) {
+  const log = loadLog();
+  const date = document.getElementById('session-date')?.value || new Date().toISOString().split('T')[0];
+  const fields = type === 'swing'
+    ? { swingWt: 'z2-swingwt', sets: 'z2-sets', getupWt: 'z2-getupwt', getups: 'z2-getups', calfFeel: 'z2-calffeel', notes: 'z2-notes' }
+    : { duration: 'z2-duration', avgHR: 'z2-avghr', maxHR: 'z2-maxhr', timeInZone: 'z2-timeinzone', cals: 'z2-cals', calfFeel: 'z2-calffeel', notes: 'z2-notes' };
+  const data = {};
+  Object.entries(fields).forEach(([k,id]) => { data[k] = document.getElementById(id)?.value || ''; });
+  const sessionData = { type, date, savedAt: new Date().toISOString(), data };
+  const filtered = log.filter(s => !(s.type === type && s.date === date));
+  filtered.push(sessionData);
+  filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+  saveLog(filtered);
+  const status = document.getElementById('save-status');
+  if (status) { status.classList.add('show'); setTimeout(() => status.classList.remove('show'), 2500); }
+}
+
+function restoreInputs(week, sess) {
+  const log = loadLog();
+  const date = document.getElementById('session-date')?.value || new Date().toISOString().split('T')[0];
+  const session = log.find(s => s.type === 'lift' && s.session === sess && s.week === week && s.date === date);
+  if (!session) return;
+  session.exercises.forEach(ex => {
+    ex.sets.forEach((set, si) => {
+      ['weight','reps','rpe','note'].forEach(field => {
+        const el = document.getElementById(`inp-${sess}-${ex.pattern}-${si}-${field}`);
+        if (el && set[field]) { el.value = set[field]; if (field !== 'note') markLogged(el); }
+      });
+    });
+  });
+}
+
+function loadPrevSession(sess) {
+  const log = loadLog();
+  const prev = log.filter(s => s.type === 'lift' && s.session === sess && s.week === currentWeek)
+    .sort((a,b) => new Date(b.date) - new Date(a.date))[0];
+  if (!prev) { alert(`No previous Session ${sess} found for Week ${currentWeek}.`); return; }
+  prev.exercises.forEach(ex => {
+    ex.sets.forEach((set, si) => {
+      ['weight','reps','rpe','note'].forEach(field => {
+        const el = document.getElementById(`inp-${sess}-${ex.pattern}-${si}-${field}`);
+        if (el) { el.value = set[field] || ''; if (set[field] && field !== 'note') markLogged(el); }
+      });
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════════
+function renderHistory() {
+  const log = loadLog();
+  const filter = document.getElementById('history-filter').value;
+  const filtered = filter === 'all' ? log
+    : filter === 'swing' ? log.filter(s => s.type === 'swing')
+    : filter === 'z2' ? log.filter(s => s.type === 'z2')
+    : log.filter(s => s.type === 'lift' && s.session === filter);
+  const view = document.getElementById('history-view');
+  if (filtered.length === 0) {
+    view.innerHTML = '<div class="history-empty">No sessions logged yet.<br>Complete a session and hit Save to see it here.</div>';
+    return;
+  }
+  view.innerHTML = filtered.map((s, idx) => {
+    const globalIdx = log.indexOf(s);
+    const dateStr = new Date(s.date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+    let title = s.type === 'swing' ? 'Swings + Get-ups' : s.type === 'z2' ? 'Zone 2 Kayak' : `Week ${s.week} · Session ${s.session}`;
+    let bodyHtml = '';
+    if (s.type === 'lift' && s.exercises) {
+      bodyHtml = s.exercises.map(ex => {
+        const pills = ex.sets.map((set, si) => {
+          const parts = [set.weight?set.weight+' lbs':null, set.reps?set.reps+' reps':null, set.rpe?'RPE '+set.rpe:null].filter(Boolean);
+          return `<span class="history-set-pill ${parts.length?'has-data':''}">${parts.length?parts.join(' · '):'—'}</span>`;
+        }).join('');
+        return `<div class="history-ex"><div class="history-ex-name">${ex.name}</div><div class="history-sets">${pills}</div></div>`;
+      }).join('');
+    } else if (s.data) {
+      const pills = Object.entries(s.data).filter(([k,v]) => v && k !== 'notes').map(([k,v]) => `<span class="history-set-pill has-data">${k}: ${v}</span>`).join('');
+      bodyHtml = `<div class="history-sets" style="margin-bottom:${s.data.notes?'8px':'0'}">${pills}</div>`;
+      if (s.data.notes) bodyHtml += `<div class="history-note">${s.data.notes}</div>`;
+    }
+    return `
+      <div class="history-session">
+        <div class="history-session-header">
+          <div><div class="history-session-title">${title}</div><div class="history-session-date">${dateStr}</div></div>
+          <button class="delete-session-btn" onclick="deleteSession(${globalIdx})">Delete</button>
+        </div>
+        ${bodyHtml}
+      </div>`;
+  }).join('');
+}
+
+function deleteSession(idx) {
+  if (!confirm('Delete this session?')) return;
+  const log = loadLog(); log.splice(idx,1); saveLog(log); renderHistory();
+}
+function clearAllHistory() {
+  if (!confirm('Delete ALL session history? Cannot be undone.')) return;
+  saveLog([]); renderHistory();
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+updateSessionCount();
+buildWeekNav();
+buildDayStrip();
+renderSession();
+</script>
+</body>
+</html>
