@@ -306,7 +306,7 @@
     <div class="card">
       <div class="card-title">TRM Testing — Find Your Working Weight</div>
       <div class="card-sub">For each movement pattern, perform reps at each KB weight with perfect technique. Your 8–10 TRM is the heaviest weight where you hit 8–10 clean reps to technical failure. This weight is fixed for all 8 weeks — the volume changes, not the weight.</div>
-      <div class="trm-note">⚠️ Test each pattern on a separate day with full rest. Do NOT rush — your TRM sets the entire program. Test squat one day, press another, pull another.</div>
+      <div class="trm-note">⚠️ Test each pattern on a separate day with full rest. Only testing 35 and 50 lb — your working weight will fall in that range. The 20 lb KB is reserved for windmills, get-ups, and warm-up use only.</div>
       <div class="trm-grid" id="trm-grid"></div>
     </div>
   </div>
@@ -397,7 +397,7 @@ const EXERCISES = {
 
 const STORAGE_KEY = 'calf_sf_v3';
 const TRM_KEY = 'calf_sf_trm_v2';
-const KB_WEIGHTS = [20, 35, 50];
+const KB_WEIGHTS = [35, 50];
 
 let currentWeek = 1;
 let currentDayIdx = 0;
@@ -831,7 +831,7 @@ function renderTRMTesting() {
     { key:'squat', label:'Squat Pattern', icon:'🏋️', exName:'Goblet squat to box', note:'Test each KB. Enter reps with perfect form before technical breakdown.' },
     { key:'press', label:'Press Pattern', icon:'💪', exName:'Seated single-arm KB press', note:'Seated on floor. Test per arm. Enter reps per side.' },
     { key:'pull',  label:'Pull Pattern',  icon:'🔗', exName:'Single-arm KB row (bent-over)', note:'Per arm. Enter total reps per side per set.' },
-    { key:'swing', label:'Swing Weight',  icon:'🔔', exName:'2-hand KB swing', note:'Pick a weight that feels explosive and easy enough for 15 sets of 7.' },
+    { key:'swing', label:'Swing Weight',  icon:'🔔', exName:'2-hand KB swing', note:'Pick between 35 and 50 lbs — should feel explosive and easy enough for 15 sets of 7.' },
   ];
   const grid = document.getElementById('trm-grid');
   grid.innerHTML = patterns.map(p => {
