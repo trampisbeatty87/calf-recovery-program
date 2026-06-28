@@ -247,7 +247,63 @@
     .safety-card-title { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
     .safety-card-text { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
 
+    /* ── Nutrition tab ── */
+    .nutr-targets { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 1.5rem; }
+    .nutr-target-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; text-align: center; }
+    .nutr-target-val { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+    .nutr-target-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+    .nutr-target-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .nutr-section-title { font-size: 15px; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+    .nutr-date-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; }
+    .nutr-date-nav button { padding: 5px 10px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); background: var(--surface); color: var(--text-secondary); font-family: inherit; font-size: 13px; cursor: pointer; }
+    .nutr-date-nav button:hover { background: var(--surface-2); }
+    .nutr-date-label { font-size: 14px; font-weight: 500; }
+    .daily-log-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+    .daily-log-field label { display: block; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+    .daily-log-field input, .daily-log-field select { width: 100%; padding: 7px 10px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; background: var(--surface); color: var(--text-primary); }
+    .daily-log-field input:focus, .daily-log-field select:focus { outline: none; border-color: var(--blue-mid); }
+    .daily-log-field input.on-target { background: var(--teal-light); border-color: var(--teal-mid); }
+    .daily-log-field input.below-target { background: var(--amber-light); border-color: var(--amber-mid); }
+    .protein-bar-wrap { margin-bottom: 1.25rem; }
+    .protein-bar-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+    .protein-bar-label span:first-child { color: var(--text-secondary); }
+    .protein-bar-label span:last-child { font-weight: 600; }
+    .protein-bar-track { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+    .protein-bar-fill { height: 100%; border-radius: 99px; background: var(--teal-mid); transition: width 0.3s; }
+    .protein-bar-fill.over { background: var(--green-mid); }
+    .protein-bar-fill.under { background: var(--amber-mid); }
+    .meal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+    .meal-card { background: var(--surface-2); border-radius: var(--radius-md); padding: 12px; }
+    .meal-card-title { font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+    .meal-input-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+    .meal-input-row label { font-size: 11px; color: var(--text-muted); width: 55px; flex-shrink: 0; }
+    .meal-input-row input { flex: 1; padding: 5px 8px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 12px; font-family: inherit; background: var(--surface); color: var(--text-primary); }
+    .meal-input-row input:focus { outline: none; border-color: var(--teal-mid); }
+    /* Weekly check-in */
+    .checkin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+    .checkin-field label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+    .checkin-field input { width: 100%; padding: 8px 10px; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; background: var(--surface); color: var(--text-primary); font-weight: 500; }
+    .checkin-field input:focus { outline: none; border-color: var(--blue-mid); }
+    .checkin-field .field-note { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    /* Progress chart */
+    .progress-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .progress-table th { text-align: left; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; padding: 0 8px 8px 0; border-bottom: 0.5px solid var(--border); font-weight: 500; }
+    .progress-table td { padding: 10px 8px 10px 0; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+    .progress-table tr:last-child td { border-bottom: none; }
+    .delta-pill { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: 99px; font-weight: 500; }
+    .delta-good { background: var(--teal-light); color: var(--teal-dark); }
+    .delta-bad { background: var(--red-light); color: var(--red-dark); }
+    .delta-neutral { background: var(--gray-light); color: var(--gray-dark); }
+    .nutr-save-btn { padding: 8px 18px; background: var(--teal-mid); color: white; border: none; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer; transition: opacity 0.15s; }
+    .nutr-save-btn:hover { opacity: 0.88; }
+    .nutr-save-status { font-size: 13px; color: var(--teal-dark); font-weight: 500; opacity: 0; transition: opacity 0.3s; margin-left: 8px; }
+    .nutr-save-status.show { opacity: 1; }
+    .star-rating { display: flex; gap: 4px; }
+    .star { font-size: 20px; cursor: pointer; opacity: 0.3; transition: opacity 0.15s; }
+    .star.active { opacity: 1; }
+
     footer { text-align: center; font-size: 12px; color: var(--text-muted); padding: 2rem 1rem 1rem; }
+
 
     @media (max-width: 640px) {
       .session-header { flex-direction: column; }
@@ -279,6 +335,7 @@
   <div class="tab-nav">
     <button class="tab-btn active" onclick="switchTab('program',this)">Program</button>
     <button class="tab-btn" onclick="switchTab('testing',this)">TRM Testing</button>
+    <button class="tab-btn" onclick="switchTab('nutrition',this)">Nutrition</button>
     <button class="tab-btn" onclick="switchTab('history',this)">History</button>
   </div>
 
@@ -324,6 +381,10 @@
       <button class="clear-all-btn" onclick="clearAllHistory()">Clear all history</button>
     </div>
     <div id="history-view"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-nutrition">
+    <div id="nutrition-view"></div>
   </div>
 </main>
 
@@ -454,6 +515,7 @@ function switchTab(name, btn) {
   btn.classList.add('active');
   if (name === 'history') renderHistory();
   if (name === 'testing') renderTRMTesting();
+  if (name === 'nutrition') renderNutrition();
 }
 
 // ── Week nav ──
@@ -1190,6 +1252,406 @@ function deleteSession(idx) {
 function clearAllHistory() {
   if (!confirm('Delete ALL history? Cannot be undone.')) return;
   saveLog([]); renderHistory();
+}
+
+// ═══════════════════════════════════════════
+// NUTRITION & MEASUREMENTS
+// ═══════════════════════════════════════════
+const NUTR_KEY = 'calf_nutrition_v1';
+const CHECKIN_KEY = 'calf_checkins_v1';
+
+// User targets (personalized for Trampis: 225 lbs, 6'1", 39yo male, Mediterranean)
+const TARGETS = {
+  calories: 2700,
+  protein: 180,
+  steps: 10000,
+  water: 100, // oz
+};
+
+let nutrDate = new Date().toISOString().split('T')[0];
+
+function loadNutrLog() { try { return JSON.parse(localStorage.getItem(NUTR_KEY)) || {}; } catch { return {}; } }
+function saveNutrLog(log) { localStorage.setItem(NUTR_KEY, JSON.stringify(log)); }
+function loadCheckins() { try { return JSON.parse(localStorage.getItem(CHECKIN_KEY)) || []; } catch { return []; } }
+function saveCheckins(c) { localStorage.setItem(CHECKIN_KEY, JSON.stringify(c)); }
+
+function fmtDate(d) {
+  return new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+}
+
+function changeNutrDate(delta) {
+  const d = new Date(nutrDate + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  nutrDate = d.toISOString().split('T')[0];
+  renderNutrition();
+}
+
+function renderNutrition() {
+  const view = document.getElementById('nutrition-view');
+  const log = loadNutrLog();
+  const today = log[nutrDate] || {};
+  const checkins = loadCheckins();
+
+  // Calc protein total from meals
+  const mealProtein = ['breakfast','lunch','dinner','snacks'].reduce((sum, m) => {
+    return sum + (parseFloat(today[m+'_protein'] || 0));
+  }, 0);
+  const totalProtein = mealProtein + parseFloat(today.whey_protein || 0);
+  const totalCals = ['breakfast','lunch','dinner','snacks'].reduce((sum, m) => {
+    return sum + (parseFloat(today[m+'_cals'] || 0));
+  }, 0);
+  const proteinPct = Math.min(Math.round((totalProtein / TARGETS.protein) * 100), 120);
+  const calPct = Math.min(Math.round((totalCals / TARGETS.calories) * 100), 120);
+  const proteinColor = totalProtein >= TARGETS.protein ? 'over' : totalProtein >= TARGETS.protein * 0.8 ? '' : 'under';
+  const calColor = totalCals >= TARGETS.calories * 0.85 && totalCals <= TARGETS.calories * 1.05 ? 'over' : totalCals < TARGETS.calories * 0.7 ? 'under' : '';
+
+  const meals = [
+    { key:'breakfast', label:'🍳 Breakfast', hint:'Eggs, Greek yogurt, berries, whole grain toast' },
+    { key:'lunch',     label:'🥗 Lunch',     hint:'Mediterranean bowl, tuna/chicken, chickpeas, feta' },
+    { key:'dinner',    label:'🐟 Dinner',    hint:'Salmon/chicken, roasted veg, quinoa or lentils' },
+    { key:'snacks',    label:'🥜 Snacks',    hint:'Almonds, cottage cheese, fruit, whey shake' },
+  ];
+
+  const mealCards = meals.map(m => `
+    <div class="meal-card">
+      <div class="meal-card-title">${m.label}</div>
+      <div class="meal-input-row">
+        <label>Protein</label>
+        <input type="number" placeholder="g" id="nutr-${m.key}-protein" value="${today[m.key+'_protein']||''}"
+          oninput="updateProteinBar()" min="0" max="200" />
+      </div>
+      <div class="meal-input-row">
+        <label>Calories</label>
+        <input type="number" placeholder="kcal" id="nutr-${m.key}-cals" value="${today[m.key+'_cals']||''}"
+          oninput="updateCalBar()" min="0" max="2000" />
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.4">${m.hint}</div>
+    </div>`).join('');
+
+  // Weekly checkin table
+  const checkinRows = checkins.length === 0
+    ? `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:1.5rem">No check-ins logged yet. Add your first one below.</td></tr>`
+    : [...checkins].reverse().map((c, i) => {
+        const prev = checkins[checkins.length - 1 - i - 1];
+        const wtDelta = prev ? (c.weight - prev.weight).toFixed(1) : null;
+        const waistDelta = prev ? (c.waist - prev.waist).toFixed(1) : null;
+        const wtClass = wtDelta === null ? 'delta-neutral' : parseFloat(wtDelta) < 0 ? 'delta-good' : parseFloat(wtDelta) > 0 ? 'delta-bad' : 'delta-neutral';
+        const waistClass = waistDelta === null ? 'delta-neutral' : parseFloat(waistDelta) < 0 ? 'delta-good' : parseFloat(waistDelta) > 0 ? 'delta-bad' : 'delta-neutral';
+        const stars = '⭐'.repeat(c.energy || 0) + '☆'.repeat(5 - (c.energy || 0));
+        return `<tr>
+          <td style="color:var(--text-muted);font-size:12px">${fmtDate(c.date)}</td>
+          <td><strong>${c.weight||'—'}</strong> lbs ${wtDelta !== null ? `<span class="delta-pill ${wtClass}">${parseFloat(wtDelta) > 0 ? '+' : ''}${wtDelta}</span>` : ''}</td>
+          <td>${c.waist||'—'}" ${waistDelta !== null ? `<span class="delta-pill ${waistClass}">${parseFloat(waistDelta) > 0 ? '+' : ''}${waistDelta}"</span>` : ''}</td>
+          <td>${c.sleep||'—'} hrs</td>
+          <td style="font-size:13px">${stars}</td>
+          <td style="font-size:12px;color:var(--text-muted)">${c.notes||''}</td>
+          <td><button onclick="deleteCheckin(${checkins.length - 1 - i})" style="padding:2px 8px;border:0.5px solid var(--border-mid);border-radius:var(--radius-sm);background:transparent;color:var(--text-muted);font-size:11px;font-family:inherit;cursor:pointer">×</button></td>
+        </tr>`;
+      }).join('');
+
+  view.innerHTML = `
+    <!-- TARGETS -->
+    <div class="card" style="margin-bottom:1rem">
+      <div class="nutr-section-title">Your daily targets</div>
+      <div class="nutr-targets">
+        <div class="nutr-target-card">
+          <div class="nutr-target-val" style="color:var(--teal-dark)">${TARGETS.calories}</div>
+          <div class="nutr-target-label">Calories</div>
+          <div class="nutr-target-sub">300–500 cal deficit</div>
+        </div>
+        <div class="nutr-target-card">
+          <div class="nutr-target-val" style="color:var(--blue-dark)">${TARGETS.protein}g</div>
+          <div class="nutr-target-label">Protein</div>
+          <div class="nutr-target-sub">0.8g per lb bodyweight</div>
+        </div>
+        <div class="nutr-target-card">
+          <div class="nutr-target-val" style="color:var(--amber-dark)">${TARGETS.water} oz</div>
+          <div class="nutr-target-label">Water</div>
+          <div class="nutr-target-sub">~3 liters daily</div>
+        </div>
+        <div class="nutr-target-card">
+          <div class="nutr-target-val" style="color:var(--green-dark)">${TARGETS.steps.toLocaleString()}</div>
+          <div class="nutr-target-label">Steps</div>
+          <div class="nutr-target-sub">afternoon walk</div>
+        </div>
+        <div class="nutr-target-card">
+          <div class="nutr-target-val" style="color:var(--purple-dark)">5g</div>
+          <div class="nutr-target-label">Creatine</div>
+          <div class="nutr-target-sub">daily, with breakfast</div>
+        </div>
+        <div class="nutr-target-card">
+          <div class="nutr-target-val" style="color:var(--text-secondary)">1–2</div>
+          <div class="nutr-target-label">Whey scoops</div>
+          <div class="nutr-target-sub">~25g protein each</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAILY LOG -->
+    <div class="card" style="margin-bottom:1rem">
+      <div class="nutr-section-title">
+        Daily nutrition log
+        <div class="nutr-date-nav">
+          <button onclick="changeNutrDate(-1)">← prev</button>
+          <span class="nutr-date-label">${fmtDate(nutrDate)}</span>
+          <button onclick="changeNutrDate(1)">next →</button>
+        </div>
+      </div>
+
+      <!-- Protein bar -->
+      <div class="protein-bar-wrap">
+        <div class="protein-bar-label">
+          <span>Protein</span>
+          <span id="protein-display" style="color:${totalProtein >= TARGETS.protein ? 'var(--teal-dark)' : 'var(--amber-dark)'}">${Math.round(totalProtein)}g / ${TARGETS.protein}g</span>
+        </div>
+        <div class="protein-bar-track">
+          <div class="protein-bar-fill ${proteinColor}" id="protein-bar" style="width:${proteinPct}%"></div>
+        </div>
+      </div>
+
+      <!-- Cal bar -->
+      <div class="protein-bar-wrap">
+        <div class="protein-bar-label">
+          <span>Calories</span>
+          <span id="cal-display" style="color:${calColor==='over'?'var(--teal-dark)':calColor==='under'?'var(--red-dark)':'var(--amber-dark)'}">${Math.round(totalCals)} / ${TARGETS.calories} kcal</span>
+        </div>
+        <div class="protein-bar-track">
+          <div class="protein-bar-fill ${calColor}" id="cal-bar" style="width:${calPct}%;background:${calColor==='over'?'var(--teal-mid)':calColor==='under'?'var(--red-dark)':'var(--amber-mid)'}"></div>
+        </div>
+      </div>
+
+      <!-- Meal cards -->
+      <div class="meal-grid">${mealCards}</div>
+
+      <!-- Supplements + extras -->
+      <div class="daily-log-grid">
+        <div class="daily-log-field">
+          <label>Whey protein (scoops)</label>
+          <input type="number" id="nutr-whey-scoops" placeholder="0–2" min="0" max="4" step="0.5"
+            value="${today.whey_scoops||''}" oninput="updateProteinBar()" />
+        </div>
+        <div class="daily-log-field">
+          <label>Whey protein (g)</label>
+          <input type="number" id="nutr-whey-protein" placeholder="~25g per scoop" min="0" max="100"
+            value="${today.whey_protein||''}" oninput="updateProteinBar()" />
+        </div>
+        <div class="daily-log-field">
+          <label>Creatine taken?</label>
+          <select id="nutr-creatine">
+            <option value="">—</option>
+            <option value="yes" ${today.creatine==='yes'?'selected':''}>✓ Yes (5g)</option>
+            <option value="no" ${today.creatine==='no'?'selected':''}>✗ No</option>
+          </select>
+        </div>
+        <div class="daily-log-field">
+          <label>Water (oz)</label>
+          <input type="number" id="nutr-water" placeholder="${TARGETS.water}" min="0" max="200"
+            value="${today.water||''}" />
+        </div>
+        <div class="daily-log-field">
+          <label>Steps</label>
+          <input type="number" id="nutr-steps" placeholder="${TARGETS.steps.toLocaleString()}" min="0" max="30000"
+            value="${today.steps||''}" />
+        </div>
+        <div class="daily-log-field">
+          <label>Sleep last night (hrs)</label>
+          <input type="number" id="nutr-sleep" placeholder="7–8" min="0" max="12" step="0.5"
+            value="${today.sleep||''}" />
+        </div>
+        <div class="daily-log-field" style="grid-column:1/-1">
+          <label>Notes</label>
+          <input type="text" id="nutr-notes" placeholder="Meals, hunger, energy, anything notable..."
+            value="${today.notes||''}" />
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;margin-top:1rem">
+        <button class="nutr-save-btn" onclick="saveDailyLog()">Save today</button>
+        <span class="nutr-save-status" id="nutr-save-status">✓ Saved</span>
+      </div>
+    </div>
+
+    <!-- WEEKLY CHECK-IN -->
+    <div class="card" style="margin-bottom:1rem">
+      <div class="nutr-section-title">Weekly check-in</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:1rem;line-height:1.6">
+        Log once per week — same day, same time, same conditions (morning, after bathroom, before eating). Track weight as a <strong>weekly average</strong>, not a single reading.
+      </div>
+      <div class="checkin-grid">
+        <div class="checkin-field">
+          <label>Date</label>
+          <input type="date" id="ci-date" value="${new Date().toISOString().split('T')[0]}" />
+        </div>
+        <div class="checkin-field">
+          <label>Weight (lbs)</label>
+          <input type="number" id="ci-weight" placeholder="e.g. 225" min="100" max="400" step="0.1" />
+          <div class="field-note">Morning, after bathroom</div>
+        </div>
+        <div class="checkin-field">
+          <label>Waist (inches)</label>
+          <input type="number" id="ci-waist" placeholder='e.g. 38.5"' min="20" max="70" step="0.25" />
+          <div class="field-note">At navel, relaxed</div>
+        </div>
+        <div class="checkin-field">
+          <label>Sleep avg (hrs)</label>
+          <input type="number" id="ci-sleep" placeholder="e.g. 7.5" min="0" max="12" step="0.5" />
+          <div class="field-note">Average this week</div>
+        </div>
+        <div class="checkin-field">
+          <label>Energy level</label>
+          <div class="star-rating" id="ci-energy-stars">
+            ${[1,2,3,4,5].map(n => `<span class="star" onclick="setEnergyRating(${n})">⭐</span>`).join('')}
+          </div>
+          <input type="hidden" id="ci-energy" value="" />
+          <div class="field-note">1 = depleted · 5 = excellent</div>
+        </div>
+        <div class="checkin-field" style="grid-column:1/-1">
+          <label>Notes</label>
+          <input type="text" id="ci-notes" placeholder="How you felt this week, calf progress, anything notable..." />
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.5rem">
+        <button class="nutr-save-btn" onclick="saveCheckin()">Save check-in</button>
+        <span class="nutr-save-status" id="ci-save-status">✓ Saved</span>
+      </div>
+
+      <!-- Progress table -->
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">Progress history</div>
+      <div style="overflow-x:auto">
+        <table class="progress-table">
+          <thead>
+            <tr>
+              <th>Week</th><th>Weight</th><th>Waist</th><th>Sleep</th><th>Energy</th><th>Notes</th><th></th>
+            </tr>
+          </thead>
+          <tbody>${checkinRows}</tbody>
+        </table>
+      </div>
+      ${checkins.length >= 2 ? `
+      <div style="margin-top:1.25rem;padding:14px;background:var(--teal-light);border-radius:var(--radius-md);border-left:3px solid var(--teal-mid)">
+        <div style="font-size:13px;font-weight:600;color:var(--teal-dark);margin-bottom:6px">Overall progress</div>
+        <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:#1a3d30">
+          <span>Weight: <strong>${(checkins[checkins.length-1].weight - checkins[0].weight).toFixed(1)} lbs</strong> since start</span>
+          <span>Waist: <strong>${(checkins[checkins.length-1].waist - checkins[0].waist).toFixed(2)}"</strong> since start</span>
+          <span>Check-ins: <strong>${checkins.length}</strong></span>
+        </div>
+      </div>` : ''}
+    </div>
+
+    <!-- MEDITERRANEAN GUIDE -->
+    <div class="card">
+      <div class="nutr-section-title">Your Mediterranean eating guide</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1rem">
+        <div style="background:var(--teal-light);border-radius:var(--radius-md);padding:12px 14px">
+          <div style="font-size:12px;font-weight:600;color:var(--teal-dark);margin-bottom:6px">🐟 Protein anchors</div>
+          <div style="font-size:12px;color:#1a3d30;line-height:1.7">Salmon, mackerel, sardines (3–4×/wk)<br>Chicken thighs or breast<br>Eggs (3–4 daily)<br>Greek yogurt, full fat<br>Cottage cheese<br>Chickpeas, lentils</div>
+        </div>
+        <div style="background:var(--blue-light);border-radius:var(--radius-md);padding:12px 14px">
+          <div style="font-size:12px;font-weight:600;color:var(--blue-dark);margin-bottom:6px">🌾 Carbs around training</div>
+          <div style="font-size:12px;color:#1a3560;line-height:1.7">Quinoa, farro, brown rice<br>Whole grain bread/pita<br>Oats<br>Sweet potato<br>Banana (pre-training)<br>Legumes (chickpeas, lentils)</div>
+        </div>
+        <div style="background:var(--amber-light);border-radius:var(--radius-md);padding:12px 14px">
+          <div style="font-size:12px;font-weight:600;color:var(--amber-dark);margin-bottom:6px">🫒 Healthy fats (moderate)</div>
+          <div style="font-size:12px;color:#3d2006;line-height:1.7">Olive oil (2–3 tbsp/day)<br>Almonds, walnuts<br>Avocado<br>Olives<br>Fatty fish (counts as protein too)</div>
+        </div>
+        <div style="background:var(--green-light);border-radius:var(--radius-md);padding:12px 14px">
+          <div style="font-size:12px;font-weight:600;color:var(--green-dark);margin-bottom:6px">🥦 Fill your plate</div>
+          <div style="font-size:12px;color:#2d5010;line-height:1.7">Spinach, arugula, romaine<br>Zucchini, eggplant, peppers<br>Cucumber, tomatoes<br>Broccoli, cauliflower<br>These are near-free calories — eat a lot</div>
+        </div>
+      </div>
+      <div style="background:var(--red-light);border-radius:var(--radius-md);padding:12px 14px;font-size:12px;color:var(--red-dark);line-height:1.7">
+        <strong>Minimize:</strong> refined carbs (white bread, pastries), added sugar, processed foods, seed oils, sweetened drinks. These are where hidden calories live — cutting them is the easiest lever you have.
+      </div>
+    </div>
+  `;
+
+  // Restore star rating
+  const savedEnergy = today.energy;
+  if (savedEnergy) setEnergyRating(savedEnergy, true);
+}
+
+function updateProteinBar() {
+  const meals = ['breakfast','lunch','dinner','snacks'];
+  const mealP = meals.reduce((sum, m) => sum + (parseFloat(document.getElementById(`nutr-${m}-protein`)?.value || 0)), 0);
+  const wheyP = parseFloat(document.getElementById('nutr-whey-protein')?.value || 0);
+  const total = mealP + wheyP;
+  const pct = Math.min(Math.round((total / TARGETS.protein) * 100), 120);
+  const bar = document.getElementById('protein-bar');
+  const display = document.getElementById('protein-display');
+  if (bar) { bar.style.width = pct + '%'; bar.className = `protein-bar-fill ${total >= TARGETS.protein ? 'over' : total >= TARGETS.protein * 0.8 ? '' : 'under'}`; }
+  if (display) { display.textContent = `${Math.round(total)}g / ${TARGETS.protein}g`; display.style.color = total >= TARGETS.protein ? 'var(--teal-dark)' : 'var(--amber-dark)'; }
+}
+
+function updateCalBar() {
+  const meals = ['breakfast','lunch','dinner','snacks'];
+  const total = meals.reduce((sum, m) => sum + (parseFloat(document.getElementById(`nutr-${m}-cals`)?.value || 0)), 0);
+  const pct = Math.min(Math.round((total / TARGETS.calories) * 100), 120);
+  const bar = document.getElementById('cal-bar');
+  const display = document.getElementById('cal-display');
+  const onTarget = total >= TARGETS.calories * 0.85 && total <= TARGETS.calories * 1.05;
+  const under = total < TARGETS.calories * 0.7;
+  if (bar) { bar.style.width = pct + '%'; bar.style.background = onTarget ? 'var(--teal-mid)' : under ? 'var(--red-dark)' : 'var(--amber-mid)'; }
+  if (display) { display.textContent = `${Math.round(total)} / ${TARGETS.calories} kcal`; display.style.color = onTarget ? 'var(--teal-dark)' : under ? 'var(--red-dark)' : 'var(--amber-dark)'; }
+}
+
+function setEnergyRating(n, silent) {
+  document.querySelectorAll('#ci-energy-stars .star').forEach((s, i) => s.classList.toggle('active', i < n));
+  const inp = document.getElementById('ci-energy');
+  if (inp) inp.value = n;
+}
+
+function saveDailyLog() {
+  const log = loadNutrLog();
+  const meals = ['breakfast','lunch','dinner','snacks'];
+  const entry = { date: nutrDate };
+  meals.forEach(m => {
+    entry[m+'_protein'] = document.getElementById(`nutr-${m}-protein`)?.value || '';
+    entry[m+'_cals'] = document.getElementById(`nutr-${m}-cals`)?.value || '';
+  });
+  entry.whey_scoops = document.getElementById('nutr-whey-scoops')?.value || '';
+  entry.whey_protein = document.getElementById('nutr-whey-protein')?.value || '';
+  entry.creatine = document.getElementById('nutr-creatine')?.value || '';
+  entry.water = document.getElementById('nutr-water')?.value || '';
+  entry.steps = document.getElementById('nutr-steps')?.value || '';
+  entry.sleep = document.getElementById('nutr-sleep')?.value || '';
+  entry.notes = document.getElementById('nutr-notes')?.value || '';
+  log[nutrDate] = entry;
+  saveNutrLog(log);
+  const s = document.getElementById('nutr-save-status');
+  if (s) { s.classList.add('show'); setTimeout(() => s.classList.remove('show'), 2500); }
+}
+
+function saveCheckin() {
+  const checkins = loadCheckins();
+  const date = document.getElementById('ci-date')?.value;
+  const entry = {
+    date,
+    weight: parseFloat(document.getElementById('ci-weight')?.value) || null,
+    waist: parseFloat(document.getElementById('ci-waist')?.value) || null,
+    sleep: parseFloat(document.getElementById('ci-sleep')?.value) || null,
+    energy: parseInt(document.getElementById('ci-energy')?.value) || null,
+    notes: document.getElementById('ci-notes')?.value || '',
+  };
+  if (!entry.weight && !entry.waist) { alert('Enter at least weight or waist measurement.'); return; }
+  const filtered = checkins.filter(c => c.date !== date);
+  filtered.push(entry);
+  filtered.sort((a,b) => new Date(a.date) - new Date(b.date));
+  saveCheckins(filtered);
+  // Clear inputs
+  ['ci-weight','ci-waist','ci-sleep','ci-notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('ci-energy').value = '';
+  document.querySelectorAll('#ci-energy-stars .star').forEach(s => s.classList.remove('active'));
+  const s = document.getElementById('ci-save-status');
+  if (s) { s.classList.add('show'); setTimeout(() => s.classList.remove('show'), 2500); }
+  renderNutrition();
+}
+
+function deleteCheckin(idx) {
+  if (!confirm('Delete this check-in?')) return;
+  const checkins = loadCheckins();
+  checkins.splice(idx, 1);
+  saveCheckins(checkins);
+  renderNutrition();
 }
 
 // ── Init ──
