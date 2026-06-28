@@ -390,10 +390,47 @@ const WEEK_DAYS = [
 ];
 
 const EXERCISES = {
-  squat: { name:'Goblet squat (to box)', icon:'🏋️', note:'Hold KB at chest. Squat to box — no full depth until calf is healed. Heels elevated if ankle ROM limited. Reset fully at bottom each rep.' },
-  press: { name:'Single-arm KB press (seated)', icon:'💪', note:'Seated on floor, legs crossed. Strict press — no leg drive, no calf engagement. Pack the shoulder, press to full lockout. Per side.' },
-  pull:  { name:'Single-arm KB row (bent-over)', icon:'🔗', note:'Hinge at hips, brace on knee. Drive elbow to hip, squeeze lat at top. Slow eccentric. No calf engagement. Per side.' },
+  squat: {
+    variations: {
+      goblet: { name:'Goblet squat (to box)', icon:'🏋️', equip:'KB', note:'Hold KB at chest. Squat to box — no full depth until calf is healed. Heels elevated if ankle ROM limited. Reset fully at bottom.' },
+    },
+    default: 'goblet'
+  },
+  press: {
+    variations: {
+      kb_seated:  { name:'Single-arm KB press (seated)', icon:'💪', equip:'KB', note:'Seated on floor, legs crossed. Strict press — no leg drive, no calf engagement. Pack shoulder, press to full lockout. Per side.' },
+      ring_push:  { name:'Ring push-up', icon:'⭕', equip:'Rings', note:'Hands in rings, feet on floor. The lower the rings, the harder. Keep a rigid plank — no sagging hips. Slow eccentric.' },
+      ring_dip:   { name:'Ring dip', icon:'⭕', equip:'Rings', note:'Full dip on rings — elbows back, lean slightly forward. Scale by keeping feet lightly on floor. Zero calf involvement when feet supported.' },
+    },
+    default: 'kb_seated'
+  },
+  pull: {
+    variations: {
+      kb_row:     { name:'Single-arm KB row (bent-over)', icon:'🔗', equip:'KB', note:'Hinge at hips, brace on knee. Drive elbow to hip, squeeze lat at top. Slow eccentric. No calf engagement. Per side.' },
+      ring_row:   { name:'Ring row (horizontal pull)', icon:'⭕', equip:'Rings', note:'Feet on floor, body at an angle. The more horizontal, the harder. Squeeze shoulder blades at top. Zero calf loading.' },
+      ring_chin:  { name:'Ring chin-up / pull-up', icon:'⭕', equip:'Rings', note:'Full hang to chin over rings. Strict form — no kipping. Band assisted if needed. This is what the StrongFirst plan was designed around.' },
+      ring_archer:{ name:'Ring archer row', icon:'⭕', equip:'Rings', note:'Single-arm bias row — one arm pulls while the other extends. High lat demand. Excellent bridge between row and pull-up.' },
+    },
+    default: 'ring_row'
+  },
 };
+
+// Exercise selections (persisted in localStorage)
+const SEL_KEY = 'calf_sf_selections';
+function loadSelections() { try { return JSON.parse(localStorage.getItem(SEL_KEY)) || {}; } catch { return {}; } }
+function saveSelections(s) { localStorage.setItem(SEL_KEY, JSON.stringify(s)); }
+function getSelection(pattern) {
+  const s = loadSelections();
+  return s[pattern] || EXERCISES[pattern].default;
+}
+function setSelection(pattern, varKey) {
+  const s = loadSelections();
+  s[pattern] = varKey;
+  saveSelections(s);
+}
+function getExercise(pattern) {
+  return EXERCISES[pattern].variations[getSelection(pattern)];
+}
 
 const STORAGE_KEY = 'calf_sf_v3';
 const TRM_KEY = 'calf_sf_trm_v2';
@@ -502,24 +539,35 @@ function renderLiftDay(day) {
   const buildExLog = (pattern, volKey) => {
     const rungs = plan[pattern];
     const vol = plan[volKey];
-    const ex = EXERCISES[pattern];
-    const isEach = pattern==='press'||pattern==='pull';
+    const ex = getExercise(pattern);
+    const curSel = getSelection(pattern);
+    const variations = EXERCISES[pattern].variations;
+    const isEach = (pattern==='press'||pattern==='pull') && !curSel.startsWith('ring_push') && !curSel.startsWith('ring_dip');
+    const isBodyweight = ex.equip === 'Rings' && (curSel === 'ring_chin' || curSel === 'ring_dip' || curSel === 'ring_row' || curSel === 'ring_archer');
+    const weightPlaceholder = isBodyweight ? 'BW/+lbs' : 'lbs';
+
+    // Variation selector buttons
+    const varBtns = Object.entries(variations).map(([k, v]) => {
+      const active = k === curSel ? 'style="background:var(--blue-dark);color:white;border-color:transparent"' : '';
+      return `<button ${active} onclick="setSelection('${pattern}','${k}');renderSession()" style="padding:4px 10px;border:0.5px solid var(--border-mid);border-radius:99px;background:var(--surface);color:var(--text-secondary);font-size:11px;font-family:inherit;cursor:pointer;transition:all 0.15s">${v.icon} ${v.name}</button>`;
+    }).join('');
 
     if (rungs==='TEST') {
-      const setRowsHtml = [1,2,3,4,5].map((_, si) => `
+      const setRowsHtml = [0,1,2,3,4].map(si => `
         <div class="set-row">
           <span class="set-num">${si+1}</span>
-          <input type="number" placeholder="lbs" id="inp-${sess}-${pattern}-${si}-weight" oninput="markLogged(this)" />
+          <input type="number" placeholder="${weightPlaceholder}" id="inp-${sess}-${pattern}-${si}-weight" oninput="markLogged(this)" />
           <input type="number" placeholder="reps" id="inp-${sess}-${pattern}-${si}-reps" oninput="markLogged(this)" />
           <input type="number" placeholder="RPE" min="1" max="10" step="0.5" id="inp-${sess}-${pattern}-${si}-rpe" oninput="markLogged(this)" />
           <span class="target-label">Work up</span>
         </div>`).join('');
       return `<div class="exercise-block">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${varBtns}</div>
         <span class="ex-name">${ex.icon} ${ex.name}</span>
-        <div class="ex-meta"><span class="ex-prescribed">TEST — work up to new TRM</span>${trmBadge(pattern)}</div>
+        <div class="ex-meta"><span class="ex-prescribed">TEST — work up to new TRM</span><span class="equip-pill">${ex.equip}</span>${trmBadge(pattern)}</div>
         <div class="ex-note-text">${ex.note}</div>
         <div class="log-section">
-          <div class="log-header"><span></span><span>Weight</span><span>Reps done</span><span>RPE</span><span>Target</span></div>
+          <div class="log-header"><span></span><span>${weightPlaceholder}</span><span>Reps done</span><span>RPE</span><span>Target</span></div>
           <div class="set-rows">${setRowsHtml}</div>
         </div>
       </div>`;
@@ -532,7 +580,7 @@ function renderLiftDay(day) {
         const target = rungs[r];
         setRowsHtml += `<div class="set-row">
           <span class="set-num">${setIdx+1}</span>
-          <input type="number" placeholder="lbs" id="inp-${sess}-${pattern}-${setIdx}-weight" oninput="markLogged(this)" />
+          <input type="number" placeholder="${weightPlaceholder}" id="inp-${sess}-${pattern}-${setIdx}-weight" oninput="markLogged(this)" />
           <input type="number" placeholder="reps" id="inp-${sess}-${pattern}-${setIdx}-reps" oninput="markLogged(this)" />
           <input type="number" placeholder="RPE" min="1" max="10" step="0.5" id="inp-${sess}-${pattern}-${setIdx}-rpe" oninput="markLogged(this)" />
           <span class="target-label">L${l+1}·${target}${isEach?' ea':''} reps</span>
@@ -541,14 +589,16 @@ function renderLiftDay(day) {
       }
     }
     return `<div class="exercise-block">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${varBtns}</div>
       <span class="ex-name">${ex.icon} ${ex.name}</span>
       <div class="ex-meta">
         <span class="ex-prescribed">${plan.ladders} ladder${plan.ladders>1?'s':''} of ${rungs.join('→')} reps${isEach?' per side':''}</span>
+        <span class="equip-pill">${ex.equip}</span>
         ${trmBadge(pattern)}
       </div>
       <div class="ex-note-text">${ex.note}</div>
       <div class="log-section">
-        <div class="log-header"><span></span><span>Weight</span><span>Reps done</span><span>RPE</span><span>Target</span></div>
+        <div class="log-header"><span></span><span>${weightPlaceholder}</span><span>Reps done</span><span>RPE</span><span>Target</span></div>
         <div class="set-rows">${setRowsHtml}</div>
       </div>
     </div>`;
@@ -608,7 +658,7 @@ function renderSwingDay() {
       id: 'acc1', name: 'Dead KB Clean (one-arm)', icon: '🔔',
       sets: '2 × 5 each arm', equip: '35 lb KB',
       note: 'Dead stop on floor each rep — eliminates ballistic catch and ankle compensation. Stand flat-footed on the catch. No re-cleaning from swing.',
-      mod: 'Dead stop start = calf safe'
+      mod: 'Dead stop = calf safe'
     },
     {
       id: 'acc2', name: 'KB Strict Press (standing)', icon: '💪',
@@ -617,22 +667,40 @@ function renderSwingDay() {
       mod: 'No drive = calf safe'
     },
     {
-      id: 'acc3', name: 'KB Windmill', icon: '🌀',
-      sets: '2 × 5 each side', equip: '20 lb KB',
-      note: 'Slow and controlled. Back foot stays completely flat — this is naturally calf-safe. KB held overhead in working arm. Push hip out to the side, hinge down.',
+      id: 'acc3', name: 'Ring Face Pull', icon: '⭕',
+      sets: '3 × 12', equip: 'Rings',
+      note: 'Rings at face height. Pull to forehead, elbows high and wide. Pause at end range. Excellent rear delt and rotator cuff work. Zero calf involvement.',
       mod: 'Naturally calf safe'
     },
     {
-      id: 'acc4', name: 'KB Front Squat (heels elevated)', icon: '🏋️',
+      id: 'acc4', name: 'KB Windmill', icon: '🌀',
+      sets: '2 × 5 each side', equip: '20 lb KB',
+      note: 'Slow and controlled. Back foot stays completely flat — naturally calf-safe. KB held overhead in working arm. Push hip out to the side, hinge down.',
+      mod: 'Naturally calf safe'
+    },
+    {
+      id: 'acc5', name: 'KB Front Squat (heels elevated)', icon: '🏋️',
       sets: '3 × 10', equip: '35 lb KB (double)',
       note: 'Both KBs in rack position. Heels on 10 lb plates — reduces ankle dorsiflexion demand. Squat to box if needed. Keep knees tracking toes.',
       mod: 'Heel elevation = calf safe'
     },
     {
-      id: 'acc5', name: 'Hand-to-Hand Swing (flat foot)', icon: '🔄',
+      id: 'acc6', name: 'Ring Fallout (ab rollout)', icon: '⭕',
+      sets: '3 × 8', equip: 'Rings',
+      note: 'From kneeling or standing — extend arms forward into a hollow body position, return under control. Brutal core work. Zero calf involvement.',
+      mod: 'Naturally calf safe'
+    },
+    {
+      id: 'acc7', name: 'Hand-to-Hand Swing (flat foot)', icon: '🔄',
       sets: '1 × 20 transfers', equip: '35 lb KB',
       note: 'Transfer at the top of the float — not at the bottom. Stay rooted through the heel the entire time. Do NOT rise onto toes during transfer.',
       mod: 'Rooted heel cue = calf safe'
+    },
+    {
+      id: 'acc8', name: 'Ring Rear Delt Fly', icon: '⭕',
+      sets: '3 × 12', equip: 'Rings',
+      note: 'Arms extended, lean back, open arms wide squeezing rear delts. Slow eccentric. The lower the rings, the harder. Zero calf loading.',
+      mod: 'Naturally calf safe'
     },
   ];
 
@@ -828,28 +896,77 @@ function renderRestDay() {
 function renderTRMTesting() {
   const trm = loadTRM();
   const patterns = [
-    { key:'squat', label:'Squat Pattern', icon:'🏋️', exName:'Goblet squat to box', note:'Test each KB. Enter reps with perfect form before technical breakdown.' },
-    { key:'press', label:'Press Pattern', icon:'💪', exName:'Seated single-arm KB press', note:'Seated on floor. Test per arm. Enter reps per side.' },
-    { key:'pull',  label:'Pull Pattern',  icon:'🔗', exName:'Single-arm KB row (bent-over)', note:'Per arm. Enter total reps per side per set.' },
-    { key:'swing', label:'Swing Weight',  icon:'🔔', exName:'2-hand KB swing', note:'Pick between 35 and 50 lbs — should feel explosive and easy enough for 15 sets of 7.' },
+    {
+      key:'squat', label:'Squat Pattern', icon:'🏋️',
+      variations: [{ key:'goblet', name:'Goblet squat to box', note:'Hold KB at chest. Test 35 and 50 lb.' }],
+    },
+    {
+      key:'press', label:'Press Pattern', icon:'💪',
+      variations: [
+        { key:'kb_seated',  name:'Seated single-arm KB press', note:'Seated on floor. Test 35 and 50 lb per arm.' },
+        { key:'ring_push',  name:'Ring push-up', note:'Bodyweight — test reps to technical failure. Adjust foot position for difficulty.' },
+        { key:'ring_dip',   name:'Ring dip', note:'Bodyweight — test reps to technical failure. Feet lightly supported if needed.' },
+      ]
+    },
+    {
+      key:'pull', label:'Pull Pattern', icon:'🔗',
+      variations: [
+        { key:'kb_row',     name:'Single-arm KB row', note:'Test 35 and 50 lb per arm.' },
+        { key:'ring_row',   name:'Ring row (horizontal)', note:'Bodyweight — adjust angle for difficulty. Test reps to technical failure.' },
+        { key:'ring_chin',  name:'Ring chin-up / pull-up', note:'Bodyweight — test reps strict. Use band if needed. This is the gold standard.' },
+        { key:'ring_archer',name:'Ring archer row', note:'Bodyweight — single arm bias. Test reps per side.' },
+      ]
+    },
+    {
+      key:'swing', label:'Swing Weight', icon:'🔔',
+      variations: [{ key:'swing', name:'2-hand KB swing', note:'Pick between 35 and 50 lbs. Should feel explosive and manageable for 15 sets of 7.' }],
+    },
   ];
+
   const grid = document.getElementById('trm-grid');
   grid.innerHTML = patterns.map(p => {
     const cur = trm[p.key];
-    const rows = KB_WEIGHTS.map(w => `
-      <div class="trm-weight-row">
-        <span class="trm-weight-label">${w} lbs</span>
-        <input type="number" class="trm-rep-input" id="trm-${p.key}-${w}" placeholder="reps" min="0" max="30"
-          value="${(trm[p.key+'_reps']&&trm[p.key+'_reps'][w])||''}"
-          oninput="updateTRMResult('${p.key}')" />
-        <span class="trm-rep-label">reps</span>
-      </div>`).join('');
+    const curSel = getSelection(p.key);
+    const isBodyweight = (v) => v.key.startsWith('ring');
+    const showKBWeights = (v) => !isBodyweight(v) || p.key === 'swing';
+
+    const varTabs = p.variations.length > 1 ? `
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+        ${p.variations.map(v => {
+          const active = v.key === curSel;
+          return `<button onclick="setSelection('${p.key}','${v.key}');renderTRMTesting()" style="padding:3px 10px;border:0.5px solid var(--border-mid);border-radius:99px;font-size:11px;font-family:inherit;cursor:pointer;background:${active?'var(--blue-dark)':'var(--surface)'};color:${active?'white':'var(--text-secondary)'};border-color:${active?'transparent':'var(--border-mid)'}">${v.name}</button>`;
+        }).join('')}
+      </div>` : '';
+
+    const curVar = p.variations.find(v => v.key === curSel) || p.variations[0];
+    const bw = isBodyweight(curVar);
+
+    const weightRows = bw
+      ? `<div style="padding:10px;background:var(--blue-light);border-radius:var(--radius-sm);font-size:13px;color:var(--blue-dark);margin-bottom:10px">
+           Bodyweight exercise — enter total reps below instead of weight/reps.
+           <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
+             <span style="font-size:13px;font-weight:500;width:80px">Reps</span>
+             <input type="number" class="trm-rep-input" id="trm-${p.key}-bw" placeholder="reps" min="0" max="50"
+               value="${trm[p.key+'_bw_reps']||''}" oninput="updateTRMResultBW('${p.key}')" />
+             <span class="trm-rep-label">to tech failure</span>
+           </div>
+         </div>`
+      : KB_WEIGHTS.map(w => `
+          <div class="trm-weight-row">
+            <span class="trm-weight-label">${w} lbs</span>
+            <input type="number" class="trm-rep-input" id="trm-${p.key}-${w}" placeholder="reps" min="0" max="30"
+              value="${(trm[p.key+'_reps']&&trm[p.key+'_reps'][w])||''}"
+              oninput="updateTRMResult('${p.key}')" />
+            <span class="trm-rep-label">reps</span>
+          </div>`).join('');
+
     return `<div class="trm-card">
       <div class="trm-card-title"><span>${p.icon}</span>${p.label}</div>
-      <div class="trm-card-sub">${p.exName} · ${p.note}</div>
-      <div class="trm-weights">${rows}</div>
+      <div class="trm-card-sub">${curVar.note}</div>
+      ${varTabs}
+      <div class="trm-weights">${weightRows}</div>
       <div class="trm-result ${cur?'found':''}" id="trm-result-${p.key}">
-        ${cur ? `✓ TRM set: ${cur} lbs` : 'Enter reps above to detect your TRM'}
+        ${cur ? `✓ ${typeof cur === 'number' ? cur+' lbs' : cur+' reps (bodyweight)'} — ${curVar.name}` : 'Enter reps above to detect your TRM'}
       </div>
       <button class="save-trm-btn" onclick="saveTRMPattern('${p.key}')">Save ${p.label}</button>
     </div>`;
@@ -859,6 +976,7 @@ function renderTRMTesting() {
 function updateTRMResult(key) {
   const repsData = {};
   let trmWeight = null;
+  let closestDiff = 99, closest = null;
   KB_WEIGHTS.forEach(w => {
     const el = document.getElementById(`trm-${key}-${w}`);
     if (el && el.value) {
@@ -866,6 +984,8 @@ function updateTRMResult(key) {
       repsData[w] = r;
       el.classList.toggle('in-range', r>=8 && r<=10);
       if (r>=8 && r<=10) trmWeight = w;
+      const diff = Math.abs(r-9);
+      if (diff < closestDiff) { closestDiff=diff; closest=w; }
     }
   });
   const el = document.getElementById(`trm-result-${key}`);
@@ -875,42 +995,69 @@ function updateTRMResult(key) {
   } else {
     const vals = Object.values(repsData);
     if (!vals.length) { el.className='trm-result'; el.textContent='Enter reps above to detect your TRM'; return; }
-    const allHigh = vals.every(r=>r>10);
-    const allLow = vals.every(r=>r<8);
     el.className = 'trm-result warning';
-    el.textContent = allHigh ? 'All weights too light — no heavier KB available. Use 50 lbs and aim for harder variation.'
-      : allLow ? 'All weights too heavy — use a lighter KB or easier variation.'
-      : 'No weight lands cleanly in 8–10 range. Pick the closest and note it.';
+    el.textContent = vals.every(r=>r>10) ? 'All weights too light — use 50 lbs.'
+      : vals.every(r=>r<8) ? 'All weights too heavy — try easier variation.'
+      : 'No weight lands cleanly in 8–10 range. Pick the closest.';
+  }
+}
+
+function updateTRMResultBW(key) {
+  const el = document.getElementById(`trm-${key}-bw`);
+  const resultEl = document.getElementById(`trm-result-${key}`);
+  if (!el || !el.value) { resultEl.className='trm-result'; resultEl.textContent='Enter reps above'; return; }
+  const reps = parseInt(el.value);
+  if (reps >= 8 && reps <= 10) {
+    resultEl.className = 'trm-result found';
+    resultEl.textContent = `✓ Good TRM: ${reps} reps to technical failure`;
+  } else if (reps > 10) {
+    resultEl.className = 'trm-result warning';
+    resultEl.textContent = `${reps} reps — too easy. Try a harder variation (more horizontal / weighted).`;
+  } else {
+    resultEl.className = 'trm-result warning';
+    resultEl.textContent = `${reps} reps — too hard. Try easier variation (feet supported / less horizontal).`;
   }
 }
 
 function saveTRMPattern(key) {
   const trm = loadTRM();
-  const repsData = {};
-  let trmWeight = null;
-  let closestDiff = 99, closest = null;
-  KB_WEIGHTS.forEach(w => {
-    const el = document.getElementById(`trm-${key}-${w}`);
-    if (el && el.value) {
-      const r = parseInt(el.value);
-      repsData[w] = r;
-      if (r>=8 && r<=10) trmWeight = w;
-      const diff = Math.abs(r-9);
-      if (diff < closestDiff) { closestDiff=diff; closest=w; }
-    }
-  });
-  const final = trmWeight || closest;
-  if (!final) { alert('Enter at least one rep count to save.'); return; }
-  trm[key] = final;
-  trm[key+'_reps'] = repsData;
+  const curSel = getSelection(key);
+  const isBW = curSel && curSel.startsWith('ring') && key !== 'swing';
+  if (isBW) {
+    const el = document.getElementById(`trm-${key}-bw`);
+    if (!el || !el.value) { alert('Enter your rep count first.'); return; }
+    const reps = parseInt(el.value);
+    trm[key] = reps + ' reps (BW)';
+    trm[key+'_bw_reps'] = reps;
+    trm[key+'_variation'] = curSel;
+  } else {
+    const repsData = {};
+    let trmWeight = null;
+    let closestDiff = 99, closest = null;
+    KB_WEIGHTS.forEach(w => {
+      const el = document.getElementById(`trm-${key}-${w}`);
+      if (el && el.value) {
+        const r = parseInt(el.value);
+        repsData[w] = r;
+        if (r>=8 && r<=10) trmWeight = w;
+        const diff = Math.abs(r-9);
+        if (diff < closestDiff) { closestDiff=diff; closest=w; }
+      }
+    });
+    const final = trmWeight || closest;
+    if (!final) { alert('Enter at least one rep count to save.'); return; }
+    trm[key] = final;
+    trm[key+'_reps'] = repsData;
+    trm[key+'_variation'] = curSel;
+  }
   saveTRM(trm);
   const el = document.getElementById(`trm-result-${key}`);
   el.className = 'trm-result found';
-  el.textContent = `✓ TRM saved: ${final} lbs`;
+  el.textContent = `✓ TRM saved: ${trm[key]}`;
   if (document.getElementById('tab-program').classList.contains('active')) renderSession();
 }
 
-// ── Logging ──
+
 function markLogged(input) {
   input.classList.toggle('logged', !!(input.value && input.value.trim()));
 }
