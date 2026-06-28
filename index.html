@@ -602,22 +602,86 @@ function renderLiftDay(day) {
 function renderSwingDay() {
   const trm = loadTRM();
   const swingWt = trm.swing || '—';
+
+  const accessories = [
+    {
+      id: 'acc1', name: 'Dead KB Clean (one-arm)', icon: '🔔',
+      sets: '2 × 5 each arm', equip: '35 lb KB',
+      note: 'Dead stop on floor each rep — eliminates ballistic catch and ankle compensation. Stand flat-footed on the catch. No re-cleaning from swing.',
+      mod: 'Dead stop start = calf safe'
+    },
+    {
+      id: 'acc2', name: 'KB Strict Press (standing)', icon: '💪',
+      sets: '2 × 10 each arm', equip: '35 lb KB',
+      note: 'No leg drive, no dip — strict overhead press only. Stand flat-footed. If balance is an issue, do it seated on a low box.',
+      mod: 'No drive = calf safe'
+    },
+    {
+      id: 'acc3', name: 'KB Windmill', icon: '🌀',
+      sets: '2 × 5 each side', equip: '20 lb KB',
+      note: 'Slow and controlled. Back foot stays completely flat — this is naturally calf-safe. KB held overhead in working arm. Push hip out to the side, hinge down.',
+      mod: 'Naturally calf safe'
+    },
+    {
+      id: 'acc4', name: 'KB Front Squat (heels elevated)', icon: '🏋️',
+      sets: '3 × 10', equip: '35 lb KB (double)',
+      note: 'Both KBs in rack position. Heels on 10 lb plates — reduces ankle dorsiflexion demand. Squat to box if needed. Keep knees tracking toes.',
+      mod: 'Heel elevation = calf safe'
+    },
+    {
+      id: 'acc5', name: 'Hand-to-Hand Swing (flat foot)', icon: '🔄',
+      sets: '1 × 20 transfers', equip: '35 lb KB',
+      note: 'Transfer at the top of the float — not at the bottom. Stay rooted through the heel the entire time. Do NOT rise onto toes during transfer.',
+      mod: 'Rooted heel cue = calf safe'
+    },
+  ];
+
+  const accRows = accessories.map((a, i) => `
+    <div class="exercise-block">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px">
+        <div>
+          <span class="ex-name">${a.icon} ${a.name}</span>
+          <div class="ex-meta">
+            <span class="ex-prescribed">${a.sets}</span>
+            <span class="equip-pill">${a.equip}</span>
+            <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:var(--teal-light);color:var(--teal-dark);font-weight:500">✓ ${a.mod}</span>
+          </div>
+          <div class="ex-note-text">${a.note}</div>
+        </div>
+      </div>
+      <div class="log-section">
+        <div class="log-header"><span></span><span>Weight</span><span>Reps done</span><span>RPE</span><span>Notes</span></div>
+        <div class="set-rows">
+          ${[0,1,2].slice(0, parseInt(a.sets[0])).map(si => `
+            <div class="set-row">
+              <span class="set-num">${si+1}</span>
+              <input type="number" placeholder="lbs" id="acc-${a.id}-${si}-weight" oninput="markLogged(this)" />
+              <input type="number" placeholder="reps" id="acc-${a.id}-${si}-reps" oninput="markLogged(this)" />
+              <input type="number" placeholder="RPE" min="1" max="10" step="0.5" id="acc-${a.id}-${si}-rpe" oninput="markLogged(this)" />
+              <input type="text" placeholder="note" id="acc-${a.id}-${si}-note" style="font-size:12px" />
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+
   return `<div class="card">
     <div class="session-header">
-      <div><div class="session-title">Swings + Get-ups + Kayak</div><div class="session-sub">Easy day · active recovery · add 20–30 min kayak after</div></div>
+      <div><div class="session-title">Swings + Get-ups + Accessory + Kayak</div><div class="session-sub">Easy day · swings → get-ups → optional accessory → kayak</div></div>
       <span class="session-badge badge-swing">Easy Day</span>
     </div>
     <div class="date-row">
       <span class="date-label">Date:</span>
       <input type="date" class="date-input" id="session-date" value="${new Date().toISOString().split('T')[0]}" />
     </div>
+
     <div class="info-hero swing-hero">
       <div class="info-hero-icon">🔔</div>
       <div>
-        <div class="info-hero-title">Active recovery — keep it easy</div>
-        <div class="info-hero-sub">This is NOT a workout. Goal is blood flow and recovery between lifting sessions. Swings should be maximally explosive per rep but total fatigue stays low. Then 20–30 min easy kayak if feeling good.</div>
+        <div class="info-hero-title">Session order: Swings → Get-ups → Accessory (optional) → Kayak</div>
+        <div class="info-hero-sub">Keep swings and get-ups as the priority. Only do the accessory block if you feel good after get-ups — it should not add significant fatigue. Skip any accessory exercise if calf feels off.</div>
       </div>
     </div>
+
     <div class="protocol-grid">
       <div class="protocol-metric"><div class="protocol-metric-label">Swings</div><div class="protocol-metric-val">7 reps</div><div class="protocol-metric-sub">top of each minute</div></div>
       <div class="protocol-metric"><div class="protocol-metric-label">Sets</div><div class="protocol-metric-val">15 sets</div><div class="protocol-metric-sub">105 total reps</div></div>
@@ -626,17 +690,29 @@ function renderSwingDay() {
       <div class="protocol-metric"><div class="protocol-metric-label">Swing KB</div><div class="protocol-metric-val">${swingWt} lbs</div><div class="protocol-metric-sub">set in TRM tab</div></div>
       <div class="protocol-metric"><div class="protocol-metric-label">Kayak after</div><div class="protocol-metric-val">20–30 min</div><div class="protocol-metric-sub">easy zone 1–2</div></div>
     </div>
+
     <div class="protocol-steps">
-      <div class="protocol-steps-title">Execution</div>
+      <div class="protocol-steps-title">Swing + get-up execution</div>
       <ul class="protocol-list swing-list">
         <li>Two-hand swings — hike KB back hard, snap hips explosively, float at top</li>
         <li>Start a new set every 60 seconds exactly — use a timer or Garmin interval</li>
+        <li>Rooted heel cue: actively push floor away with heels — no rising onto toes at top</li>
         <li>After 15 sets, rest 2–3 min then move to get-ups</li>
         <li>Get-ups: slow and deliberate, single reps alternating sides, rest between each</li>
-        <li>Calf note: keep flat feet on swings — no tip-toeing. Controlled movement on get-up rise.</li>
-        <li>Kayak after: easy pace, zone 1–2 only, 20–30 min. Skip if fatigued.</li>
       </ul>
     </div>
+
+    <div style="margin-bottom:1.25rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:14px;font-weight:600">Optional accessory block</div>
+        <span style="font-size:12px;color:var(--text-muted)">Only if energy is good after get-ups</span>
+      </div>
+      <div style="background:var(--amber-light);border-radius:var(--radius-md);padding:10px 14px;font-size:12px;color:var(--amber-dark);margin-bottom:12px;line-height:1.6">
+        ⚠️ All movements below are modified from the Muscle &amp; Fitness KB program for calf safety. If calf tightens on any exercise, skip it and move to kayak.
+      </div>
+      ${accRows}
+    </div>
+
     <div class="z2-log-section">
       <div class="z2-log-title">📋 Log this session</div>
       <div class="z2-log-grid">
@@ -644,14 +720,16 @@ function renderSwingDay() {
         <div class="z2-log-field"><label>Sets completed</label><input type="number" id="z2-sets" placeholder="15" oninput="markLogged(this)" /></div>
         <div class="z2-log-field"><label>Get-up KB (lbs)</label><input type="number" id="z2-getupwt" placeholder="e.g. 20" oninput="markLogged(this)" /></div>
         <div class="z2-log-field"><label>Get-ups done</label><input type="number" id="z2-getups" placeholder="10" oninput="markLogged(this)" /></div>
+        <div class="z2-log-field"><label>Accessory done?</label><input type="text" id="z2-accdone" placeholder="yes / partial / no" oninput="markLogged(this)" /></div>
         <div class="z2-log-field"><label>Kayak time (min)</label><input type="number" id="z2-kayakmin" placeholder="e.g. 25" oninput="markLogged(this)" /></div>
         <div class="z2-log-field"><label>Calf feel (1–10)</label><input type="number" id="z2-calffeel" placeholder="10=no issue" min="1" max="10" oninput="markLogged(this)" /></div>
-        <div class="z2-log-field z2-log-wide"><label>Notes</label><textarea id="z2-notes" placeholder="Energy level, calf status, swing quality..."></textarea></div>
+        <div class="z2-log-field z2-log-wide"><label>Notes</label><textarea id="z2-notes" placeholder="Energy level, calf status, which accessory exercises you did..."></textarea></div>
       </div>
     </div>
+
     <div class="calf-block">
       <div class="calf-heading">🩹 Calf rehab — end of session</div>
-      <div class="calf-text">Post-swings: elevation 10 min. Seated dorsiflexion stretch 3 × 30 sec. Note any swelling vs. start of session.</div>
+      <div class="calf-text">Post-session: elevation 10 min. Seated dorsiflexion stretch 3 × 30 sec. Note any swelling vs. start of session. If calf felt worse during accessory work, skip that exercise next session.</div>
     </div>
     <div class="session-actions">
       <button class="save-btn" onclick="saveZ2Session('swing')" style="background:var(--amber-mid)">Save session</button>
@@ -870,7 +948,7 @@ function saveZ2Session(type) {
   const log = loadLog();
   const date = document.getElementById('session-date')?.value || new Date().toISOString().split('T')[0];
   const fieldMap = type==='swing'
-    ? { swingWt:'z2-swingwt', sets:'z2-sets', getupWt:'z2-getupwt', getups:'z2-getups', kayakMin:'z2-kayakmin', calfFeel:'z2-calffeel', notes:'z2-notes' }
+    ? { swingWt:'z2-swingwt', sets:'z2-sets', getupWt:'z2-getupwt', getups:'z2-getups', accDone:'z2-accdone', kayakMin:'z2-kayakmin', calfFeel:'z2-calffeel', notes:'z2-notes' }
     : { duration:'z2-duration', avgHR:'z2-avghr', maxHR:'z2-maxhr', timeInZone:'z2-timeinzone', cals:'z2-cals', calfFeel:'z2-calffeel', notes:'z2-notes' };
   const data = {};
   Object.entries(fieldMap).forEach(([k,id]) => { data[k] = document.getElementById(id)?.value||''; });
