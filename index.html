@@ -653,89 +653,56 @@ function renderSwingDay() {
   const trm = loadTRM();
   const swingWt = trm.swing || '—';
 
-  const accessories = [
-    {
-      id: 'acc1', name: 'Dead KB Clean (one-arm)', icon: '🔔',
-      sets: '2 × 5 each arm', equip: '35 lb KB',
-      note: 'Dead stop on floor each rep — eliminates ballistic catch and ankle compensation. Stand flat-footed on the catch. No re-cleaning from swing.',
-      mod: 'Dead stop = calf safe'
-    },
-    {
-      id: 'acc2', name: 'KB Strict Press (standing)', icon: '💪',
-      sets: '2 × 10 each arm', equip: '35 lb KB',
-      note: 'No leg drive, no dip — strict overhead press only. Stand flat-footed. If balance is an issue, do it seated on a low box.',
-      mod: 'No drive = calf safe'
-    },
-    {
-      id: 'acc3', name: 'Ring Face Pull', icon: '⭕',
-      sets: '3 × 12', equip: 'Rings',
-      note: 'Rings at face height. Pull to forehead, elbows high and wide. Pause at end range. Excellent rear delt and rotator cuff work. Zero calf involvement.',
-      mod: 'Naturally calf safe'
-    },
-    {
-      id: 'acc4', name: 'KB Windmill', icon: '🌀',
-      sets: '2 × 5 each side', equip: '20 lb KB',
-      note: 'Slow and controlled. Back foot stays completely flat — naturally calf-safe. KB held overhead in working arm. Push hip out to the side, hinge down.',
-      mod: 'Naturally calf safe'
-    },
-    {
-      id: 'acc5', name: 'KB Front Squat (heels elevated)', icon: '🏋️',
-      sets: '3 × 10', equip: '35 lb KB (double)',
-      note: 'Both KBs in rack position. Heels on 10 lb plates — reduces ankle dorsiflexion demand. Squat to box if needed. Keep knees tracking toes.',
-      mod: 'Heel elevation = calf safe'
-    },
-    {
-      id: 'acc6', name: 'Ring Fallout (ab rollout)', icon: '⭕',
-      sets: '3 × 8', equip: 'Rings',
-      note: 'From kneeling or standing — extend arms forward into a hollow body position, return under control. Brutal core work. Zero calf involvement.',
-      mod: 'Naturally calf safe'
-    },
-    {
-      id: 'acc7', name: 'Hand-to-Hand Swing (flat foot)', icon: '🔄',
-      sets: '1 × 20 transfers', equip: '35 lb KB',
-      note: 'Transfer at the top of the float — not at the bottom. Stay rooted through the heel the entire time. Do NOT rise onto toes during transfer.',
-      mod: 'Rooted heel cue = calf safe'
-    },
-    {
-      id: 'acc8', name: 'Ring Rear Delt Fly', icon: '⭕',
-      sets: '3 × 12', equip: 'Rings',
-      note: 'Arms extended, lean back, open arms wide squeezing rear delts. Slow eccentric. The lower the rings, the harder. Zero calf loading.',
-      mod: 'Naturally calf safe'
-    },
+  // Accessory circuit — 4 exercises, 3 rounds
+  const circuit = [
+    { id:'c1', name:'Dead KB Clean (one-arm)', icon:'🔔', equip:'35 lb KB', reps:'5 each arm', mod:'Dead stop = calf safe',
+      note:'Dead stop from floor each rep. Stand flat-footed on the catch. Leave 2–3 reps in the tank.' },
+    { id:'c2', name:'Ring Face Pull', icon:'⭕', equip:'Rings', reps:'12', mod:'Naturally calf safe',
+      note:'Rings at face height. Pull to forehead, elbows high and wide. Pause at end range.' },
+    { id:'c3', name:'KB Windmill', icon:'🌀', equip:'20 lb KB', reps:'5 each side', mod:'Naturally calf safe',
+      note:'Back foot completely flat. KB overhead in working arm. Push hip out, hinge down slowly.' },
+    { id:'c4', name:'Ring Fallout', icon:'⭕', equip:'Rings', reps:'8', mod:'Naturally calf safe',
+      note:'From kneeling — extend arms to hollow body, return under control. Stop if form breaks.' },
   ];
 
-  const accRows = accessories.map((a, i) => `
-    <div class="exercise-block">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px">
-        <div>
-          <span class="ex-name">${a.icon} ${a.name}</span>
-          <div class="ex-meta">
-            <span class="ex-prescribed">${a.sets}</span>
-            <span class="equip-pill">${a.equip}</span>
-            <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:var(--teal-light);color:var(--teal-dark);font-weight:500">✓ ${a.mod}</span>
-          </div>
-          <div class="ex-note-text">${a.note}</div>
-        </div>
+  const circuitRows = circuit.map(ex => {
+    const setRows = [0,1,2].map(si => `
+      <div class="set-row">
+        <span class="set-num">R${si+1}</span>
+        <input type="number" placeholder="lbs/BW" id="acc-${ex.id}-${si}-weight" oninput="markLogged(this)" />
+        <input type="number" placeholder="reps" id="acc-${ex.id}-${si}-reps" oninput="markLogged(this)" />
+        <input type="number" placeholder="RPE" min="1" max="10" step="0.5" id="acc-${ex.id}-${si}-rpe" oninput="markLogged(this)" />
+        <span class="target-label">${ex.reps}</span>
+      </div>`).join('');
+    return `<div class="exercise-block">
+      <span class="ex-name">${ex.icon} ${ex.name}</span>
+      <div class="ex-meta">
+        <span class="ex-prescribed">3 rounds × ${ex.reps}</span>
+        <span class="equip-pill">${ex.equip}</span>
+        <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:var(--teal-light);color:var(--teal-dark);font-weight:500">✓ ${ex.mod}</span>
       </div>
+      <div class="ex-note-text">${ex.note}</div>
       <div class="log-section">
-        <div class="log-header"><span></span><span>Weight</span><span>Reps done</span><span>RPE</span><span>Notes</span></div>
-        <div class="set-rows">
-          ${[0,1,2].slice(0, parseInt(a.sets[0])).map(si => `
-            <div class="set-row">
-              <span class="set-num">${si+1}</span>
-              <input type="number" placeholder="lbs" id="acc-${a.id}-${si}-weight" oninput="markLogged(this)" />
-              <input type="number" placeholder="reps" id="acc-${a.id}-${si}-reps" oninput="markLogged(this)" />
-              <input type="number" placeholder="RPE" min="1" max="10" step="0.5" id="acc-${a.id}-${si}-rpe" oninput="markLogged(this)" />
-              <input type="text" placeholder="note" id="acc-${a.id}-${si}-note" style="font-size:12px" />
-            </div>`).join('')}
-        </div>
+        <div class="log-header"><span></span><span>Weight</span><span>Reps done</span><span>RPE</span><span>Target</span></div>
+        <div class="set-rows">${setRows}</div>
       </div>
+    </div>`;
+  }).join('');
+
+  // Swing density log — 10 rounds
+  const swingRows = Array.from({length:10}, (_,i) => `
+    <div class="set-row">
+      <span class="set-num">${i+1}</span>
+      <input type="number" placeholder="lbs" id="sw-${i}-weight" oninput="markLogged(this)" value="${swingWt !== '—' ? swingWt : ''}" />
+      <input type="number" placeholder="reps" id="sw-${i}-reps" oninput="markLogged(this)" />
+      <input type="number" placeholder="RPE" min="1" max="10" step="0.5" id="sw-${i}-rpe" oninput="markLogged(this)" />
+      <span class="target-label">15 reps @ 0:${String((i)*90).padStart(2,'0').replace(/(\d+)(\d{2})/, (_, m, s) => `${Math.floor(parseInt(m+s)/60)}:${String(parseInt(m+s)%60).padStart(2,'0')}`)}</span>
     </div>`).join('');
 
   return `<div class="card">
     <div class="session-header">
-      <div><div class="session-title">Swings + Get-ups + Accessory + Kayak</div><div class="session-sub">Easy day · swings → get-ups → optional accessory → kayak</div></div>
-      <span class="session-badge badge-swing">Easy Day</span>
+      <div><div class="session-title">Body Comp Day — Tue / Thu</div><div class="session-sub">Swings → get-ups → accessory circuit → zone 2 kayak · ~55–60 min</div></div>
+      <span class="session-badge badge-swing">Body Comp</span>
     </div>
     <div class="date-row">
       <span class="date-label">Date:</span>
@@ -743,61 +710,100 @@ function renderSwingDay() {
     </div>
 
     <div class="info-hero swing-hero">
-      <div class="info-hero-icon">🔔</div>
+      <div class="info-hero-icon">⏱️</div>
       <div>
-        <div class="info-hero-title">Session order: Swings → Get-ups → Accessory (optional) → Kayak</div>
-        <div class="info-hero-sub">Keep swings and get-ups as the priority. Only do the accessory block if you feel good after get-ups — it should not add significant fatigue. Skip any accessory exercise if calf feels off.</div>
+        <div class="info-hero-title">Session order — 55–60 min total</div>
+        <div class="info-hero-sub">
+          <strong>1.</strong> Swing density block (15 min) →
+          <strong>2.</strong> Get-ups (10 min) →
+          <strong>3.</strong> Accessory circuit (15 min) →
+          <strong>4.</strong> Zone 2 kayak (15–20 min)
+        </div>
       </div>
     </div>
 
-    <div class="protocol-grid">
-      <div class="protocol-metric"><div class="protocol-metric-label">Swings</div><div class="protocol-metric-val">7 reps</div><div class="protocol-metric-sub">top of each minute</div></div>
-      <div class="protocol-metric"><div class="protocol-metric-label">Sets</div><div class="protocol-metric-val">15 sets</div><div class="protocol-metric-sub">105 total reps</div></div>
-      <div class="protocol-metric"><div class="protocol-metric-label">Work:Rest</div><div class="protocol-metric-val">1:5</div><div class="protocol-metric-sub">~10 sec on, ~50 off</div></div>
-      <div class="protocol-metric"><div class="protocol-metric-label">Get-ups</div><div class="protocol-metric-val">10 reps</div><div class="protocol-metric-sub">5 each side after swings</div></div>
-      <div class="protocol-metric"><div class="protocol-metric-label">Swing KB</div><div class="protocol-metric-val">${swingWt} lbs</div><div class="protocol-metric-sub">set in TRM tab</div></div>
-      <div class="protocol-metric"><div class="protocol-metric-label">Kayak after</div><div class="protocol-metric-val">20–30 min</div><div class="protocol-metric-sub">easy zone 1–2</div></div>
-    </div>
-
-    <div class="protocol-steps">
-      <div class="protocol-steps-title">Swing + get-up execution</div>
-      <ul class="protocol-list swing-list">
-        <li>Two-hand swings — hike KB back hard, snap hips explosively, float at top</li>
-        <li>Start a new set every 60 seconds exactly — use a timer or Garmin interval</li>
-        <li>Rooted heel cue: actively push floor away with heels — no rising onto toes at top</li>
-        <li>After 15 sets, rest 2–3 min then move to get-ups</li>
-        <li>Get-ups: slow and deliberate, single reps alternating sides, rest between each</li>
-      </ul>
-    </div>
-
-    <div style="margin-bottom:1.25rem;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:14px;font-weight:600">Optional accessory block</div>
-        <span style="font-size:12px;color:var(--text-muted)">Only if energy is good after get-ups</span>
+    <!-- BLOCK 1: SWINGS -->
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px">Block 1 — Swing density · 15 min</div>
+      <div class="protocol-grid" style="margin-bottom:10px">
+        <div class="protocol-metric"><div class="protocol-metric-label">Protocol</div><div class="protocol-metric-val">15 reps</div><div class="protocol-metric-sub">every 90 sec</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">Rounds</div><div class="protocol-metric-val">10 rounds</div><div class="protocol-metric-sub">150 total swings</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">KB</div><div class="protocol-metric-val">${swingWt} lbs</div><div class="protocol-metric-sub">two-hand swing</div></div>
+        <div class="protocol-metric"><div class="protocol-metric-label">Style</div><div class="protocol-metric-val">Explosive</div><div class="protocol-metric-sub">max power each rep</div></div>
       </div>
-      <div style="background:var(--amber-light);border-radius:var(--radius-md);padding:10px 14px;font-size:12px;color:var(--amber-dark);margin-bottom:12px;line-height:1.6">
-        ⚠️ All movements below are modified from the Muscle &amp; Fitness KB program for calf safety. If calf tightens on any exercise, skip it and move to kayak.
+      <div style="background:var(--surface-2);border-radius:var(--radius-md);padding:10px 14px;font-size:12px;color:var(--text-secondary);margin-bottom:10px;line-height:1.6">
+        Set a 90-second repeating timer. Start each round at the beep. 15 reps takes ~20–25 sec — rest the remaining ~65 sec. Rooted heels throughout — no tip-toeing at the top.
       </div>
-      ${accRows}
+      <div class="log-section">
+        <div class="log-header"><span></span><span>KB (lbs)</span><span>Reps done</span><span>RPE</span><span>Start time</span></div>
+        <div class="set-rows">${swingRows}</div>
+      </div>
     </div>
 
+    <!-- BLOCK 2: GET-UPS -->
+    <div style="margin-bottom:1.25rem;padding:14px;background:var(--surface-2);border-radius:var(--radius-md)">
+      <div style="font-size:14px;font-weight:600;margin-bottom:6px">Block 2 — Turkish get-ups · 10 min</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;line-height:1.6">5 each side. Single reps, alternating sides. Slow and deliberate — this is skill practice, not conditioning. Rest between each rep as needed. Use 20 lb KB to start.</div>
+      <div class="log-section">
+        <div class="log-header"><span></span><span>KB (lbs)</span><span>Reps done</span><span>RPE</span><span>Side</span></div>
+        <div class="set-rows">
+          ${['L','R','L','R','L','R','L','R','L','R'].map((side,i) => `
+            <div class="set-row">
+              <span class="set-num">${i+1}</span>
+              <input type="number" placeholder="lbs" id="gu-${i}-weight" oninput="markLogged(this)" />
+              <input type="number" placeholder="reps" id="gu-${i}-reps" oninput="markLogged(this)" />
+              <input type="number" placeholder="RPE" min="1" max="10" step="0.5" id="gu-${i}-rpe" oninput="markLogged(this)" />
+              <span class="target-label">${side} side</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCK 3: ACCESSORY CIRCUIT -->
+    <div style="margin-bottom:1.25rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:14px;font-weight:600">Block 3 — Accessory circuit · 15 min</div>
+        <span style="font-size:12px;color:var(--text-muted)">3 rounds · 60–90 sec rest between rounds</span>
+      </div>
+      <div style="background:var(--blue-light);border-left:3px solid var(--blue-mid);border-radius:var(--radius-md);padding:10px 14px;font-size:12px;color:#1a3560;margin-bottom:12px;line-height:1.6">
+        Run all 4 exercises back to back with minimal rest between exercises. Rest 60–90 sec after completing all 4. Leave 2–3 reps in the tank every set — this is body comp work, not a test. All movements are calf-safe.
+      </div>
+      ${circuitRows}
+    </div>
+
+    <!-- BLOCK 4: KAYAK -->
+    <div style="margin-bottom:1.25rem;padding:14px;background:var(--green-light);border-left:3px solid var(--green-mid);border-radius:var(--radius-md)">
+      <div style="font-size:14px;font-weight:600;color:var(--green-dark);margin-bottom:6px">Block 4 — Zone 2 kayak · 15–20 min 🛶</div>
+      <div style="font-size:13px;color:#2d5010;margin-bottom:10px;line-height:1.6">Garmin on, chest strap preferred. Stay in zone 2 (60–70% max HR) the full paddle. Torso rotation drives the stroke — not arm pull. Getting in/out: use arms on dock, zero calf push-off.</div>
+      <div class="hr-zone-bar" style="margin-bottom:0">
+        <div class="hr-bar-title">Zone 2 target</div>
+        <div class="hr-zones">
+          <div class="hr-zone hz1">Z1</div><div class="hr-zone hz2 hr-zone-active">Z2 ← stay here</div>
+          <div class="hr-zone hz3">Z3</div><div class="hr-zone hz4">Z4</div><div class="hr-zone hz5">Z5</div>
+        </div>
+        <div class="hr-label-row"><span>50%</span><span>60%</span><span>70%</span><span>80%</span><span>90%+</span></div>
+      </div>
+    </div>
+
+    <!-- SESSION LOG -->
     <div class="z2-log-section">
-      <div class="z2-log-title">📋 Log this session</div>
+      <div class="z2-log-title">📋 Session summary log</div>
       <div class="z2-log-grid">
         <div class="z2-log-field"><label>Swing KB (lbs)</label><input type="number" id="z2-swingwt" placeholder="e.g. 35" oninput="markLogged(this)" /></div>
-        <div class="z2-log-field"><label>Sets completed</label><input type="number" id="z2-sets" placeholder="15" oninput="markLogged(this)" /></div>
+        <div class="z2-log-field"><label>Swing rounds done</label><input type="number" id="z2-sets" placeholder="10" oninput="markLogged(this)" /></div>
         <div class="z2-log-field"><label>Get-up KB (lbs)</label><input type="number" id="z2-getupwt" placeholder="e.g. 20" oninput="markLogged(this)" /></div>
-        <div class="z2-log-field"><label>Get-ups done</label><input type="number" id="z2-getups" placeholder="10" oninput="markLogged(this)" /></div>
-        <div class="z2-log-field"><label>Accessory done?</label><input type="text" id="z2-accdone" placeholder="yes / partial / no" oninput="markLogged(this)" /></div>
-        <div class="z2-log-field"><label>Kayak time (min)</label><input type="number" id="z2-kayakmin" placeholder="e.g. 25" oninput="markLogged(this)" /></div>
+        <div class="z2-log-field"><label>Circuit rounds done</label><input type="number" id="z2-accrounds" placeholder="3" oninput="markLogged(this)" /></div>
+        <div class="z2-log-field"><label>Kayak time (min)</label><input type="number" id="z2-kayakmin" placeholder="e.g. 18" oninput="markLogged(this)" /></div>
+        <div class="z2-log-field"><label>Avg HR kayak (bpm)</label><input type="number" id="z2-avghr" placeholder="from Garmin" oninput="markLogged(this)" /></div>
         <div class="z2-log-field"><label>Calf feel (1–10)</label><input type="number" id="z2-calffeel" placeholder="10=no issue" min="1" max="10" oninput="markLogged(this)" /></div>
-        <div class="z2-log-field z2-log-wide"><label>Notes</label><textarea id="z2-notes" placeholder="Energy level, calf status, which accessory exercises you did..."></textarea></div>
+        <div class="z2-log-field"><label>Total time (min)</label><input type="number" id="z2-totaltime" placeholder="e.g. 58" oninput="markLogged(this)" /></div>
+        <div class="z2-log-field z2-log-wide"><label>Notes</label><textarea id="z2-notes" placeholder="Energy level, calf status, how the circuit felt, kayak conditions..."></textarea></div>
       </div>
     </div>
 
     <div class="calf-block">
       <div class="calf-heading">🩹 Calf rehab — end of session</div>
-      <div class="calf-text">Post-session: elevation 10 min. Seated dorsiflexion stretch 3 × 30 sec. Note any swelling vs. start of session. If calf felt worse during accessory work, skip that exercise next session.</div>
+      <div class="calf-text">Post-session: elevation 10 min. Seated dorsiflexion stretch 3 × 30 sec. Note any swelling vs. start of session.</div>
     </div>
     <div class="session-actions">
       <button class="save-btn" onclick="saveZ2Session('swing')" style="background:var(--amber-mid)">Save session</button>
@@ -1095,7 +1101,7 @@ function saveZ2Session(type) {
   const log = loadLog();
   const date = document.getElementById('session-date')?.value || new Date().toISOString().split('T')[0];
   const fieldMap = type==='swing'
-    ? { swingWt:'z2-swingwt', sets:'z2-sets', getupWt:'z2-getupwt', getups:'z2-getups', accDone:'z2-accdone', kayakMin:'z2-kayakmin', calfFeel:'z2-calffeel', notes:'z2-notes' }
+    ? { swingWt:'z2-swingwt', swingRounds:'z2-sets', getupWt:'z2-getupwt', circuitRounds:'z2-accrounds', kayakMin:'z2-kayakmin', avgHR:'z2-avghr', calfFeel:'z2-calffeel', totalTime:'z2-totaltime', notes:'z2-notes' }
     : { duration:'z2-duration', avgHR:'z2-avghr', maxHR:'z2-maxhr', timeInZone:'z2-timeinzone', cals:'z2-cals', calfFeel:'z2-calffeel', notes:'z2-notes' };
   const data = {};
   Object.entries(fieldMap).forEach(([k,id]) => { data[k] = document.getElementById(id)?.value||''; });
